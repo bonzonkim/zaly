@@ -161,3 +161,22 @@ export async function resolvePkgs(opts: PkgOpts = {}): Promise<Pkg[]> {
   const current = await findPkg(opts)
   return current ? [current] : await allPkgs(opts)
 }
+
+export async function run(cmd: string[], cwd: string, inherit = false) {
+  const proc = Bun.spawn(cmd, {
+    cwd,
+    stderr: inherit ? "inherit" : "pipe",
+    stdout: inherit ? "inherit" : "pipe",
+  })
+  const [code, stdout, stderr] = await Promise.all([
+    proc.exited,
+    proc.stdout ? new Response(proc.stdout).text() : "",
+    proc.stderr ? new Response(proc.stderr).text() : "",
+  ])
+  return { code, stderr, stdout }
+}
+
+export async function exec(cmd: string[], cwd: string): Promise<void> {
+  const { code } = await run(cmd, cwd, true)
+  if (code !== 0) throw new Error(`${cmd[0]} failed with exit code ${code} in ${cwd}`)
+}

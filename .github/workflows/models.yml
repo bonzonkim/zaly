@@ -2,20 +2,41 @@ name: Models
 
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "13 * * * *"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: models-catalog-pr
+  cancel-in-progress: false
 
 jobs:
   models:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: oven-sh/setup-bun@v2
-      - run: bun --workspaces install --frozen-lockfile
-      - run: bun run models
-      - uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: "chore(models): update models.dev catalog"
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.3"
+      - run: bun --workspaces install --frozen-lockfile
+      - name: Update catalog and write review report
+        run: bun run models --report "$RUNNER_TEMP/models-report.md"
+      - name: Create automation token
+        id: automation-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.AUTOMATION_APP_ID }}
+          private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.automation-token.outputs.token }}
+          branch: automation/models-catalog
+          delete-branch: true
+          add-paths: packages/ai/assets/models.json
+          commit-message: "fix(models): update models.dev catalog"
+          title: "fix(models): update models.dev catalog"
+          body-path: ${{ runner.temp }}/models-report.md

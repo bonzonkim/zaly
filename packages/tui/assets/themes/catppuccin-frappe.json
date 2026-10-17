@@ -4,7 +4,7 @@
   "name": "Catppuccin Frappé",
   "shiki": "catppuccin-frappe",
   "text": "#c6d0f5",
-  "subtle": "#626880",
+  "subtle": "#292c3c",
   "ui": {
     "bg": "#303446",
     "fg": "#c6d0f5"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#494e63"
   },
+  "diffContext": "#292c3c",
   "diffAdd": {
     "bg": "#485353",
     "fg": "#a6d189"

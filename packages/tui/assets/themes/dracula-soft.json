@@ -4,7 +4,7 @@
   "name": "Dracula Theme Soft",
   "shiki": "dracula-soft",
   "text": "#f6f6f4",
-  "subtle": "#7b7f8b",
+  "subtle": "#282A36",
   "ui": {
     "bg": "#282A36",
     "fg": "#f6f6f4"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#44475A"
   },
+  "diffContext": "#282A36",
   "diffAdd": {
     "bg": "#2d443f",
     "fg": "#62e884"

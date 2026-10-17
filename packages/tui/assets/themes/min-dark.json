@@ -4,7 +4,7 @@
   "name": "Min Dark",
   "shiki": "min-dark",
   "text": "#b392f0",
-  "subtle": "#5c5c5c",
+  "subtle": "#1f1f1f",
   "ui": {
     "bg": "#1f1f1f",
     "fg": "#b392f0"
@@ -22,6 +22,7 @@
   "highlight": {
     "bg": "#212121"
   },
+  "diffContext": "#1f1f1f",
   "diffAdd": {
     "bg": "#273322"
   },

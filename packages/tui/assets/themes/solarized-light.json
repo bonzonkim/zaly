@@ -4,7 +4,7 @@
   "name": "Solarized Light",
   "shiki": "solarized-light",
   "text": "#657B83",
-  "subtle": "#002b36",
+  "subtle": "#FDF6E3",
   "ui": {
     "bg": "#FDF6E3",
     "fg": "#657B83"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#EEE8D5"
   },
+  "diffContext": "#FDF6E3",
   "diffAdd": {
     "fg": "#859900"
   },

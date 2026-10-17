@@ -4,7 +4,7 @@
   "name": "Rosé Pine",
   "shiki": "rose-pine",
   "text": "#e0def4",
-  "subtle": "#908caa",
+  "subtle": "#1f1d2e",
   "ui": {
     "bg": "#191724",
     "fg": "#e0def4"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#2a2838"
   },
+  "diffContext": "#1f1d2e",
   "diffAdd": {
     "bg": "#2d323f",
     "fg": "#9ccfd8"

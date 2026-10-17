@@ -4,7 +4,7 @@
   "name": "Catppuccin Mocha",
   "shiki": "catppuccin-mocha",
   "text": "#cdd6f4",
-  "subtle": "#585b70",
+  "subtle": "#181825",
   "ui": {
     "bg": "#1e1e2e",
     "fg": "#cdd6f4"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#3b3d4f"
   },
+  "diffContext": "#181825",
   "diffAdd": {
     "bg": "#394545",
     "fg": "#a6e3a1"

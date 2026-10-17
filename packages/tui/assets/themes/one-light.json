@@ -4,6 +4,7 @@
   "name": "One Light",
   "shiki": "one-light",
   "text": "#383A42",
+  "subtle": "#FAFAFA",
   "ui": {
     "bg": "#FAFAFA",
     "fg": "#383A42"
@@ -25,6 +26,7 @@
   "selection": {
     "bg": "#E5E5E6"
   },
+  "diffContext": "#FAFAFA",
   "diffAdd": {
     "bg": "#c8e2e7",
     "fg": "#50A14F"

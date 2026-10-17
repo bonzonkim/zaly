@@ -4,6 +4,7 @@
   "name": "Vesper",
   "shiki": "vesper",
   "text": "#FFF",
+  "subtle": "#101010",
   "ui": {
     "bg": "#101010",
     "fg": "#FFF"
@@ -27,6 +28,7 @@
   "selection": {
     "bg": "#333333"
   },
+  "diffContext": "#101010",
   "diffAdd": {
     "bg": "#1b2421",
     "fg": "#99FFE4"

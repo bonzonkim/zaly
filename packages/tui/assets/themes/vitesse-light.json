@@ -4,7 +4,7 @@
   "name": "Vitesse Light",
   "shiki": "vitesse-light",
   "text": "#393a34",
-  "subtle": "#aaaaaa",
+  "subtle": "#ffffff",
   "ui": {
     "bg": "#ffffff",
     "fg": "#393a34"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#eaeaea"
   },
+  "diffContext": "#ffffff",
   "diffAdd": {
     "bg": "#d4e3dd",
     "fg": "#22863a"

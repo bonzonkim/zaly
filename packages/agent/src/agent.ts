@@ -62,7 +62,7 @@ export class Agent extends Emitter<AgentEvents> {
   #parent?: Agent
 
   #injectQueue: Message[] = []
-  #appendQueue: Message[] = []
+  #appendQueue: Message[][] = []
   #notifyQueue: MetaPart[] = []
 
   #status: AgentStatus = "idle"
@@ -292,15 +292,19 @@ export class Agent extends Emitter<AgentEvents> {
     const messages = Array.isArray(message) ? message : [message]
     if (!messages.length) return
     for (const m of messages) m.id ??= uuidv7()
-    const queue = opts.mode === "append" ? this.#appendQueue : this.#injectQueue
-    queue.push(...messages)
+    if (opts.mode === "append") this.#appendQueue.push(messages)
+    else this.#injectQueue.push(...messages)
     void this.emit("pending", { messages })
   }
 
-  /** Append a message and (re)start the loop. The user spoke; the agent
-   *  responds. If a loop is currently running, the message lands on the
-   *  follow-up queue and is processed after the current turn naturally
-   *  stops. Otherwise the loop starts immediately. */
+  /** Queue messages and start/resume the loop when idle or paused.
+   *  `inject` (default) delivers before the next model step without
+   *  interrupting an active response or tool batch. `append` waits until
+   *  the current turn finishes naturally and no injections remain.
+   *  Injections batch in queue order; appends run one send() submission
+   *  at a time, keeping each submission's messages together.
+   *  With `run: false`, only enqueue; omit messages to start/resume
+   *  processing already queued work. */
   send(message?: Message | Message[], opts: { mode?: SendMode; run?: boolean } = {}): void {
     this.#enqueue(message ?? [], opts)
     if (opts.run === false) return
@@ -449,6 +453,7 @@ export class Agent extends Emitter<AgentEvents> {
   async #collect() {
     this.#abortController = new AbortController()
     const context = {
+      cacheKey: this.ctx.session.id,
       messages: [...this.ctx.messages],
       prompt: this.prompt,
       tools: this.tools,
@@ -497,11 +502,9 @@ export class Agent extends Emitter<AgentEvents> {
       })
     }
 
-    // Drain the send queue (user-submitted via `send()`) and the inject
-    // queue (notifier / wakeup / hooks). Sequential await preserves
-    // chronological order on the session.
+    // Drain injections from send(), notifications, wakeups, and hooks.
+    // Sequential await preserves queue order in the session.
     for (const m of this.#injectQueue.splice(0)) await this.session.add(m)
-    for (const m of this.#appendQueue.splice(0)) await this.session.add(m)
 
     this.#setStatus("streaming")
 
@@ -721,26 +724,23 @@ export class Agent extends Emitter<AgentEvents> {
     // displays, not per-turn caps.
     this.#stopPolicy.reset()
     for (let turn = 1; ; turn++) {
+      // Start one append submission only after pending injections have settled.
+      if (this.#injectQueue.length === 0)
+        for (const m of this.#appendQueue.shift() ?? []) await this.session.add(m)
+
       void this.emit("turn-start", { turn })
       const result = await this.#turn()
       const reason = result.reason ? toError(result.reason).message : undefined
       void this.emit("turn-end", { outcome: result.kind, reason, turn })
 
-      if (result.kind === "natural") {
-        // Drain follow-up queue if anything arrived during the turn.
-        if (this.#appendQueue.length > 0) {
-          for (const m of this.#appendQueue.splice(0)) await this.session.add(m)
-          continue
-        }
-        // Wakeups (or any other inject) that fired while the agent was
-        // streaming / running-tools land in `#injectQueue`. If we stop
-        // here without giving them a turn, they get drained at the top
-        // of the next unrelated user turn — surfacing the wakeup AFTER
-        // the user's reply, with no `status="cancelled"` marker since it
-        // never went through `#cancelAllWakeups`. Continue the loop so
-        // `step()` drains them next iteration.
-        if (this.#injectQueue.length > 0) continue
-      }
+      // If the model stopped naturally but there are still queued messages,
+      // keep the loop alive to process them.
+      if (
+        result.kind === "natural" &&
+        (this.#injectQueue.length > 0 || this.#appendQueue.length > 0)
+      )
+        continue
+
       return this.#stop(result.kind, result.reason)
     }
   }

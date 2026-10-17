@@ -4,7 +4,7 @@
   "name": "Material Theme Palenight",
   "shiki": "material-theme-palenight",
   "text": "#babed8",
-  "subtle": "#676E95",
+  "subtle": "#292D3E",
   "ui": {
     "bg": "#292D3E",
     "fg": "#babed8"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#404663"
   },
+  "diffContext": "#292D3E",
   "diffAdd": {
     "bg": "#354356",
     "fg": "#C3E88D"

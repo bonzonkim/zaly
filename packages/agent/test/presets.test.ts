@@ -126,6 +126,24 @@ describe("preset — yolo", () => {
     }
   })
 
+  test.each(["cat <<'EOF'\nhello\nEOF", 'cat "$FILE"', 'echo hello > "$OUTPUT"'])(
+    "shell fallback allows under yolo: %s",
+    (command) => {
+      expect(m.validate("bash", command).verdict).toBe("allow")
+    }
+  )
+
+  test("shell fallback preserves explicit restrictions", () => {
+    const command = "cat <<'EOF'\nhello\nEOF"
+    for (const rule of ["bash(cat:*)", "read(secret.txt)", "write(secret.txt)"]) {
+      const restricted = manager("yolo", { rules: { deny: [rule] } })
+      expect(restricted.validate("bash", command).verdict).toBe("ask")
+    }
+    const restricted = manager("yolo", { rules: { ask: ["write(secret.txt)"] } })
+    expect(restricted.validate("bash", 'echo hello > "$OUTPUT"').verdict).toBe("ask")
+    expect(manager("readonly").validate("bash", 'cat "$FILE"').verdict).toBe("ask")
+  })
+
   test("reads + writes inside workspace allow", () => {
     expect(m.validate("read", `${cwd}/src/index.ts`).verdict).toBe("allow")
     expect(m.validate("write", `${cwd}/src/foo.ts`).verdict).toBe("allow")

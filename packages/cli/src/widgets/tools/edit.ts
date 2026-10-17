@@ -4,12 +4,14 @@ import type { ToolRenderer, ToolResultCtx } from "./registry.ts"
 import { prettyPath } from "@zaly/shared"
 import { memo, unwrap } from "@zaly/tui"
 import { diff } from "@zaly/tui/widgets/diff"
+import { fileCall } from "./default.ts"
 
 /** Result renderer for the `edit` tool. Renders a unified diff between
  *  `meta.original` and `meta.content` (pre/post-edit content stashed by
  *  the tool). The diff widget runs `diffLines` internally to derive
  *  hunks with proper context. */
 export const editRenderer: ToolRenderer<EditTool> = {
+  call: fileCall,
   result(props: ToolResultCtx<EditTool>) {
     const path = memo(() => {
       const p = unwrap(props.result)?.meta?.path ?? props.params?.path

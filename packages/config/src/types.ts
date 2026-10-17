@@ -16,14 +16,13 @@ export type ResourceFilter = {
 }
 
 export type ResolvedConfig = {
-  /** Defaul model to use for the agent **/
+  /** Default model to use for the agent. */
   model?: string
-  /** Default reasoning effort **/
+  /** Default reasoning effort. */
   reasoning: ReasoningEffort
   tools: string[]
   ui: {
-    /** scrollback: preserves terminal scrollback/search; footer scrolls away with mouse wheel because the terminal is scrolling
-   /* fullscreen: alternate screen + mouse; footer stays fixed; dedicated app viewport */
+    /** Terminal display mode. Scrollback preserves terminal history/search; fullscreen uses an alternate screen with a fixed footer. */
     mode: "scrollback" | "fullscreen"
     copyOnSelect: boolean
     /** Tools whose result body should be hidden in the UI. */
@@ -49,7 +48,7 @@ export type ResolvedConfig = {
     /** Prefix for command actions. Defaults to `skill:`, e.g `/skill:SKILL_NAME` */
     actionPrefix?: string
   }
-  /** Template commands **/
+  /** Template commands. */
   commands: {
     /** Prefix for command actions. Defaults to `` */
     actionPrefix?: string

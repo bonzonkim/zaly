@@ -132,7 +132,7 @@ export async function* glob(
   const ignoreFiles = new Map<string, number>(o.ignoreFiles.map((igf, i) => [igf, i]))
   const rootIgnore = new Ignores({
     cwd: root,
-    ig: ignore().add([...o.exclude, ...ignoreFiles.keys()]),
+    ig: ignore().add(o.exclude),
   })
   const patterns = (typeof pattern === "string" ? [pattern] : (pattern ?? [])).filter(
     (p) => p.trim() !== ""
@@ -163,7 +163,7 @@ export async function* glob(
 
   async function ls(dir: GlobEntry) {
     if (stopped) return
-    let entries: (Dirent & { skip?: boolean })[]
+    let entries: Dirent[]
     try {
       entries = await readdir(dir.path, { withFileTypes: true })
       // oxlint-disable-next-line typescript/no-unnecessary-condition
@@ -179,7 +179,6 @@ export async function* glob(
     // First pass to find ignore files and build ignore tree
     for (const entry of entries) {
       if (o.ignore && entry.isFile() && ignoreFiles.has(entry.name)) {
-        entry.skip = true // mark ignore files to skip in the main loop
         ignoreAdd ??= []
         ignoreAdd.push({ igf: `${dir.path}/${entry.name}`, order: ignoreFiles.get(entry.name)! })
       }
@@ -196,7 +195,6 @@ export async function* glob(
     for (const entry of entries) {
       // oxlint-disable-next-line typescript/no-unnecessary-condition
       if (stopped) return // check if stopped before processing each entry
-      if (entry.skip) continue // skip already processed ignore files
       if (!o.hidden && entry.name.startsWith(".")) continue
       const path = `${dir.path}/${entry.name}`
       let isDirectory = entry.isDirectory()
@@ -289,7 +287,6 @@ export async function* glob(
 
   o.signal?.throwIfAborted()
   if (matches.length === 0) return
-  if (o.throttle)
-    yield matches.splice(0) // yield and clear matches
+  if (o.throttle) yield matches.splice(0) // yield and clear matches
   else yield* matches.splice(0) // yield and clear matches
 }

@@ -4,7 +4,7 @@
   "name": "Poimandres",
   "shiki": "poimandres",
   "text": "#a6accd",
-  "subtle": "#a6accd",
+  "subtle": "#13151b",
   "ui": {
     "bg": "#1b1e28",
     "fg": "#a6accd"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#272c3c"
   },
+  "diffContext": "#13151b",
   "diffAdd": {
     "bg": "#1f242f",
     "fg": "#ADD7FF"

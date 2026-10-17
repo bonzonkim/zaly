@@ -1,18 +1,21 @@
 import type { Tool } from "@zaly/ai"
-import type { InspectOpts } from "@zaly/tui"
+import type { InspectOpts, Reactive } from "@zaly/tui"
 
 import { safeParseToolParams } from "@zaly/ai"
 import { truncateAnsi } from "@zaly/shared/ansi"
-import { inspect } from "@zaly/tui"
+import { inspect, unwrap } from "@zaly/tui"
 import { text } from "@zaly/tui/widgets/text"
 
 const COMMON_PARAMS = ["path", "command", "url", "pattern", "glob"]
 
 /** Render a tool call preview: `toolName(param)` */
-export function toolPreview(tool: string, params: string | Record<string, unknown> = "") {
+export function toolPreview(tool: string, params: Reactive<string | Record<string, unknown>> = "") {
   return text((ctx) => {
     const { style, width } = ctx
-    const p = toolParams(params, { width: Math.min(80, width - tool.length - 2) })
+    const p = toolParams(unwrap(params), {
+      style: ctx.style,
+      width: Math.min(80, width - tool.length - 2),
+    })
     return `${style.primary.bold(tool)}(${p})`
   })
 }

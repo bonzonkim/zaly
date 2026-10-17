@@ -4,7 +4,7 @@
   "name": "Everforest Dark",
   "shiki": "everforest-dark",
   "text": "#d3c6aa",
-  "subtle": "#859289",
+  "subtle": "#272e33",
   "ui": {
     "bg": "#2d353b",
     "fg": "#d3c6aa"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#414b51"
   },
+  "diffContext": "#272e33",
   "diffAdd": {
     "bg": "#354947",
     "fg": "#a7c080"

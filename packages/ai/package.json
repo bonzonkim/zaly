@@ -1,6 +1,6 @@
 {
   "name": "@zaly/ai",
-  "version": "0.0.5",
+  "version": "0.0.11",
   "description": "Provider/model abstraction, auth, streaming, tools, content, and validation for zaly.",
   "keywords": [
     "ai",
@@ -55,11 +55,11 @@
     "mitata": "^1.0.34"
   },
   "peerDependencies": {
-    "typebox": "^1.3.6"
+    "typebox": "^1.3.37"
   },
   "engines": {
     "bun": ">=1.2",
-    "node": ">=22.11"
+    "node": ">=22.18.0"
   },
   "inlinedDependencies": {
     "jsonrepair": "3.15.0"

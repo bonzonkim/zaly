@@ -4,12 +4,14 @@ import type { ToolRenderer, ToolResultCtx } from "./registry.ts"
 import { prettyPath } from "@zaly/shared"
 import { memo, unwrap } from "@zaly/tui"
 import { diff } from "@zaly/tui/widgets/diff"
+import { fileCall } from "./default.ts"
 
 /** Result renderer for the `write` tool. Renders a unified diff between
  *  the pre-write content (`meta.original`, empty for new files) and
  *  the post-write content (`meta.content`). New files show as fully-
  *  added — same shape as a GitHub "new file" diff view. */
 export const writeRenderer: ToolRenderer<WriteTool> = {
+  call: fileCall,
   result(props: ToolResultCtx<WriteTool>) {
     const path = memo(() => {
       const p = unwrap(props.result)?.meta?.path

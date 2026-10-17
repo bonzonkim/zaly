@@ -3,7 +3,7 @@ import type { Message } from "@zaly/ai"
 import { defineTool, stringifyContent } from "@zaly/ai"
 import { Type } from "typebox"
 import { describe, expect, test } from "vitest"
-import { mockModel, runAgent, throwingModel } from "./helpers.ts"
+import { loadAgent, mockModel, runAgent, throwingModel } from "./helpers.ts"
 
 const Add = defineTool({
   call: ({ a, b }) => a + b,
@@ -12,6 +12,21 @@ const Add = defineTool({
 })
 
 describe("Agent — no tool calls", () => {
+  test("uses the session id as the provider cache key", async () => {
+    const model = mockModel([
+      [{ finishReason: "stop", type: "finish", usage: { input: 10, output: 2 } }],
+    ])
+    const agent = await loadAgent({ messages: [{ content: "hi", role: "user" }], model })
+    let cacheKey: string | undefined
+    agent.on("context", (ctx) => {
+      cacheKey = ctx.cacheKey
+    })
+
+    await agent.run()
+
+    expect(cacheKey).toBe(agent.ctx.session.id)
+  })
+
   test("completes in one step when the model stops", async () => {
     const model = mockModel([
       [

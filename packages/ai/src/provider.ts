@@ -12,6 +12,8 @@ export interface Context {
   messages: Message[]
   /** Tools available for the model to call this turn. */
   tools?: Tool[]
+  /** Stable identity used by providers to keep prompt-cache routing consistent. */
+  cacheKey?: string
 }
 
 /** Per-call stream knobs. Distinct from `Context` because these typically
@@ -39,10 +41,11 @@ export interface StreamOptions {
    *      the trailing tool definition and on the last content block of
    *      the last message — caching `system + tools` across the session
    *      and the rolling prefix up to the previous turn.
-   *    - OpenAI: prefix caching is automatic; this flag is a no-op.
+   *    - OpenAI: prefix caching is automatic; when enabled, Responses
+   *      requests include the context cache key for stable cache affinity.
    *
-   *  Useful as a debugging kill-switch or when a caller wants strict
-   *  per-token billing. */
+   *  Useful as a debugging kill-switch for provider cache hints. Providers
+   *  with automatic caching may still cache requests when this is false. */
   caching?: boolean
 }
 

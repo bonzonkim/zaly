@@ -1,9 +1,20 @@
+import type { FileTool } from "@zaly/agent"
 import type { ToolRenderer, ToolResultCtx } from "./registry.ts"
 
 import { stringifyContent } from "@zaly/ai"
-import { unwrap } from "@zaly/tui"
+import { prettyPath } from "@zaly/shared"
+import { memo, unwrap } from "@zaly/tui"
 import { text } from "@zaly/tui/widgets/text"
 import { toolPreview } from "../params.ts"
+
+/// Show the pretty printed file path in the call preview.
+export function fileCall(props: ToolResultCtx<FileTool>) {
+  const path = memo(() => {
+    const p = unwrap(props.result)?.meta?.path
+    return { path: p ? prettyPath(p) : (props.params?.path ?? "unknown path") }
+  })
+  return toolPreview(props.call.name, path)
+}
 
 /** Generic fallback renderer — dim text preview of the result content,
  *  truncated to 500 chars. Used for any tool that doesn't have a

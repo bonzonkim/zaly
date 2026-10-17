@@ -4,7 +4,7 @@
   "name": "Monokai",
   "shiki": "monokai",
   "text": "#F8F8F2",
-  "subtle": "#666666",
+  "subtle": "#272822",
   "ui": {
     "bg": "#272822",
     "fg": "#F8F8F2"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#575a5a"
   },
+  "diffContext": "#272822",
   "diffAdd": {
     "bg": "#39471c",
     "fg": "#A6E22E"

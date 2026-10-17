@@ -30,8 +30,11 @@ export const grepTool = defineTool({
   parallel: true,
   // oxlint-disable-next-line sort-keys -- semantic param order
   params: Type.Object({
-    pattern: Type.String({ description: "Text or regex pattern to search for.", minLength: 1 }),
-    cwd: Type.Optional(Type.String({ description: "Directory to search from. Defaults to cwd." })),
+    pattern: Type.String({
+      description:
+        "Text or regex pattern. Uses smart case: case-insensitive unless uppercase is present.",
+      minLength: 1,
+    }),
     paths: Type.Optional(
       Type.Array(Type.String(), {
         description: "Optional files/directories to search, relative to cwd or absolute.",
@@ -42,40 +45,16 @@ export const grepTool = defineTool({
         description: "Ripgrep glob filters, e.g. [`*.ts`, `!dist/**`].",
       })
     ),
-    exclude: Type.Optional(
-      Type.Array(Type.String(), {
-        description: "Patterns to exclude, e.g. [`node_modules`, `dist/**`].",
-      })
-    ),
-    file_type: Type.Optional(
-      Type.Array(Type.String(), {
-        description: "Ripgrep file types (`-t`), e.g. [`ts`, `rust`, `markdown`].",
-      })
-    ),
     fixed_strings: Type.Optional(
       Type.Boolean({
         default: false,
         description: "Treat all patterns as literals instead of as regular expressions",
       })
     ),
-    case_sensitive: Type.Optional(
-      Type.Boolean({
-        default: false,
-        description:
-          "Case sensitive search. Default false is smart case (case-insensitive if pattern is lowercase).",
-      })
-    ),
-    hidden: Type.Optional(
-      Type.Boolean({ default: false, description: "Search hidden files/directories." })
-    ),
-    ignore: Type.Optional(
-      Type.Boolean({ default: true, description: "Respect .gitignore/.ignore rules." })
-    ),
-    follow: Type.Optional(Type.Boolean({ default: false, description: "Follow symlinks." })),
     context: Type.Optional(
       Type.Integer({
         default: 0,
-        description: "Context lines before/after each match. 0-5.",
+        description: "Context lines before/after each match. 0-10.",
         maximum: 10,
         minimum: 0,
       })
@@ -83,7 +62,7 @@ export const grepTool = defineTool({
     limit: Type.Optional(
       Type.Integer({
         default: DEFAULT_LIMIT,
-        description: "Maximum matched lines to keep inline.",
+        description: "Maximum output lines to keep inline, including file headings and context.",
         maximum: MAX_LIMIT,
         minimum: 1,
       })
@@ -91,7 +70,7 @@ export const grepTool = defineTool({
   }),
 
   async preflight(args, ctx: ToolContext<GrepToolMeta>) {
-    const cwd = normPath(ctx.cwd, args.cwd ?? ".")
+    const cwd = normPath(ctx.cwd, ".")
     await ctx.need?.("read", cwd)
 
     const paths = (args.paths?.length ? args.paths : ["."]).map((p) => normPath(cwd, p))
@@ -102,7 +81,7 @@ export const grepTool = defineTool({
     const command = resolveGrep()
     if (!command) throw new AiError({ code: "MISSING_TOOL", message: "grep requires rg or grep" })
 
-    const cwd = normPath(ctx.cwd, args.cwd ?? ".")
+    const cwd = normPath(ctx.cwd, ".")
     const paths = args.paths?.length ? args.paths : []
 
     const cmdArgs = buildArgs(command.kind, args, paths)
@@ -164,33 +143,6 @@ export const grepTool = defineTool({
 type GrepArgs = Parameters<GrepTool["call"]>[0]
 type GrepBackend = { cmd: string; kind: "rg" | "grep" }
 
-const FILE_TYPE_EXTENSIONS: Record<string, string[]> = {
-  c: ["c", "h"],
-  cpp: ["cpp", "cc", "cxx", "hpp", "hh", "hxx"],
-  go: ["go"],
-  java: ["java"],
-  js: ["js", "jsx", "mjs", "cjs"],
-  json: ["json"],
-  lua: ["lua"],
-  markdown: ["md", "markdown"],
-  md: ["md", "markdown"],
-  py: ["py"],
-  python: ["py"],
-  rs: ["rs"],
-  rust: ["rs"],
-  toml: ["toml"],
-  ts: ["ts", "tsx", "mts", "cts"],
-  yaml: ["yml", "yaml"],
-}
-
-function fileTypeExtensions(type: string): string[] {
-  return FILE_TYPE_EXTENSIONS[type] ?? [type]
-}
-
-function fileTypeGlobs(type: string): string[] {
-  return fileTypeExtensions(type).map((e) => `*.${e}`)
-}
-
 function resolveGrep(): GrepBackend | undefined {
   const rg = which("rg")
   if (rg) return { cmd: rg, kind: "rg" }
@@ -214,18 +166,12 @@ function buildRgArgs(args: GrepArgs, paths: string[]): string[] {
   ]
 
   if (args.fixed_strings) ret.push("--fixed-strings")
-  if (args.case_sensitive) ret.push("--case-sensitive")
-  else ret.push("--smart-case")
-  if (args.hidden) ret.push("--hidden")
-  else ret.push("--no-hidden")
-  if (!args.ignore) ret.push("--no-ignore")
-  if (args.follow) ret.push("--follow")
+  ret.push("--smart-case", "--no-hidden")
   const context = args.context ?? 0
   if (context > 0) ret.push(`--context=${context}`)
 
-  for (const e of [...defaultExcludes(paths), ...(args.exclude ?? [])]) ret.push("--glob", `!${e}`)
+  for (const e of defaultExcludes(paths)) ret.push("--glob", `!${e}`)
   for (const g of args.glob ?? []) ret.push("--glob", g)
-  for (const t of args.file_type ?? []) ret.push("--type", t)
 
   ret.push("--", args.pattern, ...paths)
   return ret
@@ -242,13 +188,10 @@ function buildGrepArgs(args: GrepArgs, paths: string[]): string[] {
   if (args.fixed_strings) ret.push("--fixed-strings")
   else ret.push("--extended-regexp")
   const hasUpper = /[A-Z]/.test(args.pattern)
-  if (!args.case_sensitive && !hasUpper) ret.push("--ignore-case")
+  if (!hasUpper) ret.push("--ignore-case")
   const context = args.context ?? 0
   if (context > 0) ret.push("--context", String(context))
-  for (const e of [...defaultExcludes(paths), ...(args.exclude ?? [])]) ret.push("--exclude-dir", e)
-  for (const t of args.file_type ?? []) {
-    for (const g of fileTypeGlobs(t)) ret.push("--include", g)
-  }
+  for (const e of defaultExcludes(paths)) ret.push("--exclude-dir", e)
   for (const g of args.glob ?? []) ret.push(...grepGlobArgs(g))
   ret.push("--", args.pattern, ...paths)
   return ret

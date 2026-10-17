@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#3f4758"
   },
+  "diffContext": "#4c566a",
   "diffAdd": {
     "bg": "#3f4a5a",
     "fg": "#A3BE8C"

@@ -4,7 +4,7 @@
   "name": "Everforest Light",
   "shiki": "everforest-light",
   "text": "#5c6a72",
-  "subtle": "#5c6a72",
+  "subtle": "#f4f0d9",
   "ui": {
     "bg": "#fdf6e3",
     "fg": "#5c6a72"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#efe9d5"
   },
+  "diffContext": "#f4f0d9",
   "diffAdd": {
     "bg": "#e2ecd5",
     "fg": "#8da101"

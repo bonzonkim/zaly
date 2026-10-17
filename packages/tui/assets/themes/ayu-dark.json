@@ -4,7 +4,7 @@
   "name": "Ayu Dark",
   "shiki": "ayu-dark",
   "text": "#bfbdb6",
-  "subtle": "#686868",
+  "subtle": "#10141c",
   "ui": {
     "bg": "#0d1017",
     "fg": "#bfbdb6"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#172e51"
   },
+  "diffContext": "#10141c",
   "diffAdd": {
     "bg": "#19251f",
     "fg": "#70bf56"

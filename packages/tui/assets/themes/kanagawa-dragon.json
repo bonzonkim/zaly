@@ -4,7 +4,7 @@
   "name": "Kanagawa Dragon",
   "shiki": "kanagawa-dragon",
   "text": "#C5C9C5",
-  "subtle": "#A6A69C",
+  "subtle": "#181616",
   "ui": {
     "bg": "#181616",
     "fg": "#C5C9C5"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#223249"
   },
+  "diffContext": "#181616",
   "diffAdd": {
     "bg": "#22251f",
     "fg": "#76946A"
@@ -56,6 +57,9 @@
   },
   "syntaxField": {
     "fg": "#C5C9C5"
+  },
+  "syntaxSpecial": {
+    "fg": "#8992A7"
   },
   "syntaxDelimiter": {
     "fg": "#9E9B93"

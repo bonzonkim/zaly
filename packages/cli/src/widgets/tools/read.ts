@@ -8,17 +8,45 @@ import { box } from "@zaly/tui/widgets/box"
 import { code } from "@zaly/tui/widgets/code"
 import { log } from "@zaly/tui/widgets/log"
 import { show } from "@zaly/tui/widgets/show"
+import { text } from "@zaly/tui/widgets/text"
+import { fileCall } from "./default.ts"
 
-const PREVIEW_LINE_LIMIT = 10
+const PREVIEW_LINE_LIMIT = 5
 
-/** Result renderer for the `read` tool. Once the file contents land,
- *  render them as a syntax-highlighted code block titled with the path.
- *
- *  The kernel's read tool prefixes lines with `cat -n`-style numbering;
- *  we strip it before highlighting so shiki tokens line up with the
- *  source. The numbering is regenerated visually by the terminal's
- *  natural row count anyway. */
+/** Show requested/resolved line ranges in the call preview and render
+ *  text results as numbered, syntax-highlighted code blocks. */
 export const readRenderer: ToolRenderer<ReadTool> = {
+  call(props) {
+    const path = fileCall(props)
+    // Let flex shrink the path; toolPreview truncates it to the allocated width.
+    path.state.wrap = "char"
+
+    const range = memo(() => {
+      const result = unwrap(props.result)
+      const meta = result?.meta
+      if (result === undefined) {
+        const offset = props.params?.offset ?? 1
+        const limit = props.params?.limit
+        if (offset < 0) {
+          return limit !== undefined && limit < -offset
+            ? `${-offset} from end · ${limit} line${limit === 1 ? "" : "s"}`
+            : `last ${-offset} line${offset === -1 ? "" : "s"}`
+        } else if (limit !== undefined) {
+          const start = Math.max(1, offset)
+          return `${start}–${start + limit - 1}`
+        } else if (offset > 1) return `${offset}–…`
+      } else if (!result.isError && meta?.kind === "read" && !meta.full && !meta.unchanged) {
+        return meta.limit > 0 ? `${meta.offset}–${meta.offset + meta.limit - 1}` : "no lines"
+      }
+      return ""
+    })
+    return box(
+      { flexDirection: "row", gap: 1 },
+      path,
+      text(range, { flexShrink: 0, style: "quiet" })
+    )
+  },
+
   result(props: ToolResultCtx<ReadTool>) {
     const path = memo(() => {
       const p = unwrap(props.result)?.meta?.path
@@ -29,7 +57,7 @@ export const readRenderer: ToolRenderer<ReadTool> = {
     const title = memo(() =>
       unwrap(props.result)?.isError === true ? `${path()}  (error)` : path()
     )
-    const content = memo(() => stripLineNumbers(justText(unwrap(props.result)?.content ?? "")))
+    const content = memo(() => justText(unwrap(props.result)?.content ?? ""))
     const numberOffset = memo(() => unwrap(props.result)?.meta?.offset ?? props.params?.offset)
 
     return box(
@@ -57,10 +85,4 @@ export const readRenderer: ToolRenderer<ReadTool> = {
       )
     )
   },
-}
-
-/** Drop the leading `   N→` / `   N  ` line-number prefix the read tool
- *  emits. Tolerant of slight format variations. */
-function stripLineNumbers(content: string): string {
-  return content.replaceAll(/^\s*\d+\t/gm, "")
 }

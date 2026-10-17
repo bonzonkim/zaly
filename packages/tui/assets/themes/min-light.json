@@ -4,7 +4,7 @@
   "name": "Min Light",
   "shiki": "min-light",
   "text": "#24292eff",
-  "subtle": "#a1a1a1",
+  "subtle": "#ffffff",
   "ui": {
     "bg": "#ffffff",
     "fg": "#24292eff"
@@ -26,6 +26,7 @@
   "highlight": {
     "bg": "#EEE"
   },
+  "diffContext": "#ffffff",
   "diffAdd": {
     "bg": "#eaf8e4"
   },

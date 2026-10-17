@@ -4,7 +4,7 @@
   "name": "Dracula Theme",
   "shiki": "dracula",
   "text": "#F8F8F2",
-  "subtle": "#6272A4",
+  "subtle": "#282A36",
   "ui": {
     "bg": "#282A36",
     "fg": "#F8F8F2"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#44475A"
   },
+  "diffContext": "#282A36",
   "diffAdd": {
     "bg": "#2d443f",
     "fg": "#50FA7B"

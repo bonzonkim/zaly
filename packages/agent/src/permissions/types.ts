@@ -59,6 +59,8 @@ export interface PermissionContext<T extends string> {
   /** The matched scope. Useful when a handler covers multiple scopes
    *  (e.g. `FileHandler` for `"read" | "write"`) and wants to branch. */
   scope: T
+  /** Whether a scope has an unrestricted blanket allow, for unresolved shell inputs. */
+  allowsAll?: (scope: string) => boolean
   /** Rules pre-filtered to `scope` by the manager. */
   rules: readonly Rule<T>[]
   /** Workspace directories shared across handlers — file scopes use

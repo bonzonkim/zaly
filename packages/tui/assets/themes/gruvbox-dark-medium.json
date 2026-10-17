@@ -4,7 +4,7 @@
   "name": "Gruvbox Dark Medium",
   "shiki": "gruvbox-dark-medium",
   "text": "#ebdbb2",
-  "subtle": "#928374",
+  "subtle": "#282828",
   "ui": {
     "bg": "#282828",
     "fg": "#ebdbb2"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#384539"
   },
+  "diffContext": "#282828",
   "diffAdd": {
     "bg": "#434428",
     "fg": "#b8bb26"

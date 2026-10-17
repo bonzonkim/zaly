@@ -11,13 +11,17 @@ export async function replay(session: Session, app: App) {
   const messages = session.messages.filter((m) => !m.hidden).slice(-REPLAY_LIMIT)
   if (messages.length === 0) return
 
-  const tail = messageWidgets(messages.slice(-STICKY_TAIL), app, { pending: true })
-
+  // Match tool calls to results before splitting; the boundary can fall between them.
+  const entries = messageWidgets(messages, app, { pending: true })
+  const tailIds = new Set(messages.slice(-STICKY_TAIL).map((m) => m.id))
+  const tail = entries.filter((m) => tailIds.has(m.id))
   const tailWidgets = tail.flatMap(({ widgets }) => widgets)
-
-  const nodes = messageWidgets(messages.slice(0, -STICKY_TAIL), app, { pending: false }).flatMap(
-    ({ widgets }) => widgets
-  )
+  const nodes = entries
+    .filter((m) => !tailIds.has(m.id))
+    .flatMap(({ widgets, setPending }) => {
+      setPending?.(false)
+      return widgets
+    })
 
   // Render the tail first with sticky:true, so that the end state is visible immediately
   for (const node of tailWidgets) app.renderer.stream.append(node)

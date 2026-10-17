@@ -4,7 +4,7 @@
   "name": "Vitesse Dark",
   "shiki": "vitesse-dark",
   "text": "#dbd7caee",
-  "subtle": "#777777",
+  "subtle": "#121212",
   "ui": {
     "bg": "#121212",
     "fg": "#dbd7caee"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#272727"
   },
+  "diffContext": "#121212",
   "diffAdd": {
     "bg": "#253a31",
     "fg": "#85e89d"

@@ -1,0 +1,113 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.18.0"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.3
+      - run: bun install --frozen-lockfile
+      - run: bun docs:build
+      - name: Summarize generated reference updates
+        shell: bash
+        run: |
+          if ! git diff --quiet -- docs/reference; then
+            {
+              echo '### Generated reference updates'
+              echo 'The site uses freshly generated content. A rolling PR records these changes on main.'
+              echo '```text'
+              git diff --stat -- docs/reference
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload generated references
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-references
+          path: |
+            docs/reference/cli.md
+            docs/reference/commands.md
+            docs/reference/keybindings.md
+            docs/reference/settings.md
+            docs/reference/tools.md
+      - name: Upload site
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vitepress/dist
+
+  sync-references:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: generated-references
+          path: docs/reference
+      - name: Create automation token
+        id: automation-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.AUTOMATION_APP_ID }}
+          private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.automation-token.outputs.token }}
+          branch: automation/docs-reference-sync
+          base: main
+          delete-branch: true
+          title: "chore(docs): sync generated references"
+          commit-message: "chore(docs): sync generated references"
+          body: |
+            Record reference sections generated from the current source definitions.
+
+            The website deployment uses these freshly generated files independently
+            of this PR. Merging records them in Git for review and history.
+
+            Handwritten content outside the generated markers is preserved.
+          add-paths: |
+            docs/reference/cli.md
+            docs/reference/commands.md
+            docs/reference/keybindings.md
+            docs/reference/settings.md
+            docs/reference/tools.md
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

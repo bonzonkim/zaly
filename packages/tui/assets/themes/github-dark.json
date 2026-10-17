@@ -4,7 +4,7 @@
   "name": "GitHub Dark",
   "shiki": "github-dark",
   "text": "#e1e4e8",
-  "subtle": "#959da5",
+  "subtle": "#2f363d",
   "ui": {
     "bg": "#24292e",
     "fg": "#e1e4e8"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#284566"
   },
+  "diffContext": "#2f363d",
   "diffAdd": {
     "bg": "#254132",
     "fg": "#85e89d"

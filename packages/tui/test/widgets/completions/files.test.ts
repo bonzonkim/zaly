@@ -58,10 +58,10 @@ describe("filesSource", () => {
     expect(values).toContain("package.json")
   })
 
-  test("default filter hides dotfiles", async () => {
+  test("default filter includes dotfiles", async () => {
     const src = filesSource({ cwd: root })
     const items = await complete(src, "")
-    expect(items.map((i) => i.text)).not.toContain(".hidden")
+    expect(items.map((i) => i.text)).toContain(".hidden")
   })
 
   test("hidden:true (keeps dotfiles)", async () => {

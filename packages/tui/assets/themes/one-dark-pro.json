@@ -4,7 +4,7 @@
   "name": "One Dark Pro",
   "shiki": "one-dark-pro",
   "text": "#abb2bf",
-  "subtle": "#4f5666",
+  "subtle": "#282c34",
   "ui": {
     "bg": "#282c34",
     "fg": "#abb2bf"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#404859"
   },
+  "diffContext": "#282c34",
   "diffAdd": {
     "bg": "#203d49",
     "fg": "#98c379"

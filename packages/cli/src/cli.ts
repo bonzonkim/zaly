@@ -110,7 +110,7 @@ export function mainCommand(cli: Cli) {
         type: "string",
         alias: ["m"],
         description:
-          "Model id (provider/model). When omitted: uses the resumed session's model, else the last model you used (saved in ~/.zaly/state.json), else a built-in fallback.",
+          "Model id (provider/model). When omitted: uses the resumed session's model, else the last model saved in the user state directory, else a built-in fallback.",
       },
       "api-key": {
         type: "string",
@@ -178,7 +178,7 @@ export function mainCommand(cli: Cli) {
         type: "enum",
         options: ["strict", "readonly", "permissive", "yolo"] as PermissionPresetName[],
         description:
-          "Permission preset to use (strict=deny all, readonly=allow read-only tools, permissive=allow most tools, yolo=allow everything). Overrides `yolo` flag if both are present.",
+          "Permission preset (strict=ask for operations, readonly=allow common inspection/dev commands and ask for writes, permissive=broader dev access, yolo=allow everything). Overrides `yolo` if both are present.",
       },
       "print-config": {
         type: "boolean",

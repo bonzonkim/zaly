@@ -86,6 +86,16 @@ export class PermissionManager {
 
   // ── Dispatch ────────────────────────────────────────────────────────
 
+  /** True only when a blanket allow has no earlier restrictive exceptions. */
+  allowsAll(scope: string): boolean {
+    for (const rule of this.#rules) {
+      if (rule.scope !== scope) continue
+      if (rule.policy !== "allow") return false
+      if (rule.pattern === "*") return true
+    }
+    return false
+  }
+
   validate(scope: string, input: string): CheckResult {
     if (!handlerRegistry.has(scope)) {
       throw new Error(`no permission handler registered for scope "${scope}"`)
@@ -93,6 +103,7 @@ export class PermissionManager {
     const handler = handlerRegistry.load(scope)
     const rules = this.#rules.filter((r) => r.scope === scope)
     return handler.validate(input, {
+      allowsAll: this.allowsAll.bind(this),
       cwd: this.cwd,
       rules,
       scope,

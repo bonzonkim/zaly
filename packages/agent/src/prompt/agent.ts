@@ -25,7 +25,7 @@ single response — parallel reads / bashes / searches that don't depend on
 each other should fire together, not sequentially.
 
 Always read a file before editing it, and re-read after long gaps or
-external changes — the freshness tracker enforces this. Prefer \`edit\`
+external changes. Prefer \`edit\`
 for in-place changes; reserve \`write\` for new files or full rewrites.
 
 Older tool results may be masked to compact context. Treat masked results as

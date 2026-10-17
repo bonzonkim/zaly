@@ -8,7 +8,7 @@ import { defineCommand, runCommand, runMain, showUsage } from "citty"
 import { existsSync } from "node:fs"
 import { join } from "pathe"
 import { isAgent } from "std-env"
-import { findPkg, resolvePkgs, workspace } from "./utils.ts"
+import { allPkgs, findPkg, resolvePkgs, workspace } from "./utils.ts"
 
 const passthrough = new Set(["test", "lint", "fmt"])
 
@@ -109,10 +109,13 @@ const main = defineCommand({
         description: "Lint with oxlint -f stylish (extra args passthrough)",
       },
       run: async ({ rawArgs }) => {
-        if (isAgent) {
-          await exec(["oxlint", ...rawArgs])
-        } else {
-          await exec(["oxlint", "-f", "stylish", ...rawArgs])
+        const workflows = rawArgs.filter((arg) => arg.startsWith(".github/workflows/"))
+        const sourceArgs = rawArgs.filter((arg) => !workflows.includes(arg))
+        if (process.cwd() === workspace && (rawArgs.length === 0 || workflows.length > 0)) {
+          await exec(["actionlint", ...workflows], workspace)
+        }
+        if (workflows.length === 0 || sourceArgs.length > 0) {
+          await exec(["oxlint", ...(isAgent ? [] : ["-f", "stylish"]), ...sourceArgs])
         }
       },
     }),
@@ -125,12 +128,26 @@ const main = defineCommand({
         await exec(["oxfmt", ...rawArgs])
       },
     }),
+    pack: defineCommand({
+      meta: { name: "pack", description: "Pack public packages and write a release manifest" },
+      args: {
+        out: { type: "string", required: true, description: "Artifact directory" },
+      },
+      run: async ({ args }) => {
+        const { packRelease } = await import("./pack.ts")
+        await packRelease(await allPkgs(), {
+          dir: args.out,
+          root: workspace,
+        })
+      },
+    }),
     publish: defineCommand({
       meta: {
         name: "publish",
         description: "Publish public packages to npm, skipping versions that already exist",
       },
       args: {
+        artifacts: { type: "string", description: "Publish prebuilt artifacts without repacking" },
         "dry-run": {
           type: "boolean",
           description: "Run npm publish --dry-run",
@@ -151,14 +168,19 @@ const main = defineCommand({
         },
       },
       run: async ({ args }) => {
-        const { publish } = await import("./publish.ts")
-        await publish(await resolvePkgs(), {
+        const { publish, publishArtifacts } = await import("./publish.ts")
+        const opts = {
           root: workspace,
           dryRun: args["dry-run"],
           otp: args.otp,
           provenance: args.provenance,
           tag: args.tag,
-        })
+        }
+        if (args.artifacts) {
+          await publishArtifacts(args.artifacts, opts)
+        } else {
+          await publish(await resolvePkgs(), opts)
+        }
       },
     }),
     bench: defineCommand({

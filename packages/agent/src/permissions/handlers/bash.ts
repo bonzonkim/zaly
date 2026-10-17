@@ -27,6 +27,9 @@ export const bashHandler: PermissionHandler<"bash"> = {
   validate(input, ctx): CheckResult {
     const parsed = parseBash(input)
     if (!parsed.ok) {
+      if (["bash", "read", "write"].every((scope) => ctx.allowsAll?.(scope))) {
+        return { verdict: "allow" }
+      }
       return {
         ask: `Allow this bash command? (${parsed.reason})`,
         reason: parsed.reason,
@@ -76,7 +79,7 @@ export const bashHandler: PermissionHandler<"bash"> = {
       const writes = [...(spec?.writes?.(seg.args) ?? []), ...seg.writes.map((w) => w.path)]
 
       for (const path of reads) {
-        if (seg.dyn?.has(path)) {
+        if (seg.dyn?.has(path) && !ctx.allowsAll?.("read")) {
           segVerdict = combine(segVerdict, "ask")
           segReason ??= `${seg.cmd}: read ${path}: dynamic path`
           suggestions.push({
@@ -96,7 +99,7 @@ export const bashHandler: PermissionHandler<"bash"> = {
       }
       if (segVerdict !== "deny") {
         for (const path of writes) {
-          if (seg.dyn?.has(path)) {
+          if (seg.dyn?.has(path) && !ctx.allowsAll?.("write")) {
             segVerdict = combine(segVerdict, "ask")
             segReason ??= `${seg.cmd}: write ${path}: dynamic path`
             suggestions.push({

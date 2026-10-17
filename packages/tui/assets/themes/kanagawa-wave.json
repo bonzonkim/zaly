@@ -4,7 +4,7 @@
   "name": "Kanagawa Wave",
   "shiki": "kanagawa-wave",
   "text": "#DCD7BA",
-  "subtle": "#727169",
+  "subtle": "#1F1F28",
   "ui": {
     "bg": "#1F1F28",
     "fg": "#DCD7BA"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#223249"
   },
+  "diffContext": "#1F1F28",
   "diffAdd": {
     "bg": "#252928",
     "fg": "#76946A"
@@ -56,6 +57,9 @@
   },
   "syntaxField": {
     "fg": "#DCD7BA"
+  },
+  "syntaxSpecial": {
+    "fg": "#957FB8"
   },
   "syntaxDelimiter": {
     "fg": "#9CABCA"

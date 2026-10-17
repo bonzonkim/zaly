@@ -14,7 +14,7 @@ npm install -g @zaly/cli
 bun add -g @zaly/cli
 ```
 
-Node.js 22.11 or newer is required.
+Node.js 22.18.0 or newer is required.
 
 See the [zaly README](https://github.com/folke/zaly#readme) for features, quick
 start, permissions, actions, configuration, and terminal notes.

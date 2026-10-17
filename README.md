@@ -41,7 +41,7 @@ extended.
 
 ## 📋 Requirements
 
-- [Node.js](https://nodejs.org/) **22.11 or newer**
+- [Node.js](https://nodejs.org/) **22.18.0 or newer**
 - Access to at least one supported model provider; credentials where required
 - A modern terminal; mouse, clipboard, and terminal graphics support are
   optional

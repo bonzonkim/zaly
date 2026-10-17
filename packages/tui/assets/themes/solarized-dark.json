@@ -4,7 +4,7 @@
   "name": "Solarized Dark",
   "shiki": "solarized-dark",
   "text": "#839496",
-  "subtle": "#002b36",
+  "subtle": "#002B36",
   "ui": {
     "bg": "#002B36",
     "fg": "#839496"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#274642"
   },
+  "diffContext": "#002B36",
   "diffAdd": {
     "fg": "#859900"
   },

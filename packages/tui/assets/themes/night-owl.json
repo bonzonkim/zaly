@@ -4,7 +4,7 @@
   "name": "Night Owl",
   "shiki": "night-owl",
   "text": "#d6deeb",
-  "subtle": "#575656",
+  "subtle": "#4f4f4f",
   "ui": {
     "bg": "#011627",
     "fg": "#d6deeb"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#1d3b53"
   },
+  "diffContext": "#4f4f4f",
   "diffAdd": {
     "bg": "#162c31",
     "fg": "#c5e478"

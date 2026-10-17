@@ -26,7 +26,7 @@ const defaults: FindOptions = {
   depth: Infinity,
   exclude: [],
   follow: false,
-  hidden: false,
+  hidden: true,
   ignore: true,
   limit: undefined,
   paths: [],

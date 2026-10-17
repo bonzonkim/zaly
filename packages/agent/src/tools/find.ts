@@ -23,7 +23,8 @@ export const findTool = defineTool({
   desc:
     "Find files using fd/fdfind or rg --files. `glob` is a filename/path glob, " +
     "array of globs, or plain substring; empty, `*`, or `**/*` lists all files. " +
-    "Respects .gitignore by default; prefer this over bash find for file discovery.",
+    "Includes hidden files and respects .gitignore by default. Does not follow directory symlinks; " +
+    "prefer this over bash find for file discovery.",
   parallel: true,
   // oxlint-disable-next-line sort-keys -- semantic param order
   params: Type.Object({
@@ -34,30 +35,20 @@ export const findTool = defineTool({
           "Filename/path glob, array of globs, or plain substring. Empty, `*`, or `**/*` lists all files.",
       })
     ),
-    cwd: Type.Optional(Type.String({ description: "Directory to search from. Defaults to cwd." })),
     paths: Type.Optional(
       Type.Array(Type.String(), {
         description: "Optional directories to search, relative to cwd or absolute.",
       })
     ),
-    type: Type.Optional(
-      Type.Union([Type.Literal("file"), Type.Literal("dir"), Type.Literal("any")], {
-        default: "file",
-        description: "Entry type to return. `dir` requires fd/fdfind or find fallback.",
-      })
-    ),
-    exclude: Type.Optional(
-      Type.Array(Type.String(), {
-        description: "Patterns to exclude, e.g. [`node_modules`, `dist/**`].",
-      })
-    ),
     hidden: Type.Optional(
-      Type.Boolean({ default: false, description: "Include hidden files/directories." })
+      Type.Boolean({
+        default: true,
+        description: "Include files in hidden directories and dotfiles.",
+      })
     ),
     ignore: Type.Optional(
       Type.Boolean({ default: true, description: "Respect .gitignore/.ignore rules." })
     ),
-    follow: Type.Optional(Type.Boolean({ default: false, description: "Follow symlinks." })),
     limit: Type.Optional(
       Type.Integer({
         default: DEFAULT_LIMIT,
@@ -69,14 +60,14 @@ export const findTool = defineTool({
   }),
 
   async preflight(args, ctx: ToolContext<FindToolMeta>) {
-    const cwd = normPath(ctx.cwd, args.cwd ?? ".")
+    const cwd = normPath(ctx.cwd, ".")
     await ctx.need?.("read", cwd)
     const paths = (args.paths?.length ? args.paths : ["."]).map((p) => normPath(cwd, p))
     await Promise.all(paths.map((path) => Promise.resolve(ctx.need?.("read", path))))
   },
 
   async call(args, ctx: ToolContext<FindToolMeta>): Promise<(MetaPart | TextPart)[]> {
-    const cwd = normPath(ctx.cwd, args.cwd ?? ".")
+    const cwd = normPath(ctx.cwd, ".")
 
     let result: string[] = []
     try {

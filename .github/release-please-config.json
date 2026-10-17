@@ -3,10 +3,8 @@
   "release-type": "node",
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": true,
-  "separate-pull-requests": false,
+  "separate-pull-requests": true,
   "prerelease": false,
-  "prerelease-type": "alpha",
-  "initial-version": "0.0.1",
   "changelog-sections": [
     { "type": "feat", "section": "🚀 Enhancements" },
     { "type": "fix", "section": "🩹 Fixes" },
@@ -22,12 +20,19 @@
     { "type": "chore", "section": "🏡 Chores", "hidden": true }
   ],
   "packages": {
-    "packages/agent": {},
-    "packages/ai": {},
-    "packages/cli": {},
-    "packages/config": {},
-    "packages/plugin": {},
-    "packages/shared": {},
-    "packages/tui": {}
-  }
+    ".": {
+      "extra-files": [
+        { "type": "json", "path": "packages/agent/package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "packages/ai/package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "packages/cli/package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "packages/config/package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "packages/plugin/package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "packages/shared/package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "packages/tui/package.json", "jsonpath": "$.version" }
+      ]
+    }
+  },
+  "bootstrap-sha": "297a711069ff4afecc7783ae4cd463391effa806",
+  "include-component-in-tag": false,
+  "include-v-in-tag": true
 }

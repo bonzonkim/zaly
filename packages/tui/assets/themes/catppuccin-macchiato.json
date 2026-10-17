@@ -4,7 +4,7 @@
   "name": "Catppuccin Macchiato",
   "shiki": "catppuccin-macchiato",
   "text": "#cad3f5",
-  "subtle": "#5b6078",
+  "subtle": "#1e2030",
   "ui": {
     "bg": "#24273a",
     "fg": "#cad3f5"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#404459"
   },
+  "diffContext": "#1e2030",
   "diffAdd": {
     "bg": "#3e4b4c",
     "fg": "#a6da95"

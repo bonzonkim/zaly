@@ -153,6 +153,31 @@ describe("glob", () => {
       expect(result).toContain("sub/file.txt")
     })
 
+    test("returns ignore files while still applying their rules", async () => {
+      const result = await collect("**/*", { cwd: root, hidden: true })
+      expect(result).toContain(".gitignore")
+      expect(result).toContain("sub/.gitignore")
+      expect(result).not.toContain("ignored.txt")
+      expect(result).not.toContain("sub/file.log")
+    })
+
+    test("ignore files can still be explicitly excluded", async () => {
+      const result = await collect("**/*", {
+        cwd: root,
+        exclude: [".gitignore"],
+        hidden: true,
+      })
+      expect(result).not.toContain(".gitignore")
+      expect(result).not.toContain("sub/.gitignore")
+      expect(result).not.toContain("ignored.txt")
+    })
+
+    test("returns ignore files when ignore processing is disabled", async () => {
+      const result = await collect("**/.gitignore", { cwd: root, hidden: true, ignore: false })
+      expect(result).toContain(".gitignore")
+      expect(result).toContain("sub/.gitignore")
+    })
+
     test("`ignore: false` disables ignore-file processing", async () => {
       const result = await collect("**/*.txt", { cwd: root, ignore: false })
       expect(result).toContain("ignored.txt")
@@ -175,7 +200,7 @@ describe("glob", () => {
   describe("exclude option", () => {
     test("default exclude prunes `.git` and `node_modules/`", async () => {
       const result = await collect("**/*", { cwd: root, hidden: true })
-      expect(result.some((r) => r.startsWith(".git"))).toBe(false)
+      expect(result.some((r) => r === ".git" || r.startsWith(".git/"))).toBe(false)
       expect(result.some((r) => r.startsWith("node_modules"))).toBe(false)
     })
 

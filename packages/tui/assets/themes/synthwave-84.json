@@ -4,6 +4,7 @@
   "name": "Synthwave '84",
   "shiki": "synthwave-84",
   "text": "#bbbbbb",
+  "subtle": "#262335",
   "ui": {
     "bg": "#262335",
     "fg": "#bbbbbb"
@@ -30,6 +31,7 @@
   "selection": {
     "bg": "#413f4e"
   },
+  "diffContext": "#262335",
   "diffAdd": {
     "bg": "#204d4a"
   },

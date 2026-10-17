@@ -1,19 +1,20 @@
 import type { Content, ToolContext } from "@zaly/ai"
+import type { FileMeta } from "../utils/file.ts"
 
-import { AiError, defineTool, extractToolResults, toAttachment } from "@zaly/ai"
-import { normPath, safeStat } from "@zaly/shared"
+import { AiError, defineTool, toAttachment } from "@zaly/ai"
+import { normPath } from "@zaly/shared"
 import { fileDetect } from "@zaly/shared/detect"
 import { normalizeEol } from "@zaly/shared/text"
 import { stat } from "node:fs/promises"
 import { Type } from "typebox"
+import { isUnchanged } from "../utils/file.ts"
 
 /**
  * Read a file from disk.
  *
  * Output shape:
- *   - Text files → numbered lines, `cat -n` style (6-char padded number,
- *     tab, content). Line numbers reflect the absolute line in the file
- *     even when reading a slice via `offset`/`limit`.
+ *   - Text files → plain text plus a `<slice>` metadata part describing
+ *     the returned line range, including when reading the whole file.
  *   - Image files (png, jpeg, webp, gif, avif, …) → `ImagePart` attachment.
  *     The model sees the image natively if its modality supports it.
  *   - Other binary files → `BINARY_FILE` error with a hint.
@@ -28,31 +29,6 @@ const MAX_LINE_LENGTH = 2000
 
 export type ReadTool = typeof readTool
 
-export type FileMeta = {
-  path: string
-  mtime: number
-  kind: "read" | "write" | "edit"
-  /** True when the result reflects the whole-file content — set by
-   *  un-sliced `read` and by `write` (which always replaces the
-   *  full file). Used by the masker to know whether this result
-   *  subsumes earlier reads of the same path. `edit` never sets it
-   *  because the result is patch-relative. */
-  full?: boolean
-  unchanged?: boolean
-}
-
-function isFileMeta(meta: unknown): meta is FileMeta {
-  const m = meta as Partial<Record<string, unknown>> | undefined | null
-  return (
-    m !== undefined &&
-    m !== null &&
-    typeof m === "object" &&
-    typeof m.path === "string" &&
-    typeof m.mtime === "number" &&
-    (m.kind === "read" || m.kind === "write" || m.kind === "edit")
-  )
-}
-
 export type ReadToolMeta = FileMeta & {
   offset: number
   limit: number
@@ -66,7 +42,7 @@ export type ReadToolMeta = FileMeta & {
 // oxlint-disable-next-line sort-keys -- semantic field order: name, desc, params, call
 export const readTool = defineTool({
   name: "read",
-  desc: `Read a file. Text files return numbered lines (\`cat -n\` style). Image & PDF files are sent as attachments. Use \`offset\`/\`limit\` to slice large files.`,
+  desc: `Read a file. Text files return plain text with line-range metadata. Image & PDF files are sent as attachments. Use \`offset\`/\`limit\` to slice large files.`,
   parallel: true,
   // oxlint-disable-next-line sort-keys -- semantic param order
   params: Type.Object({
@@ -163,10 +139,8 @@ export const readTool = defineTool({
       offset: args.offset ?? 1,
     })
 
-    // Record the read so the freshness tracker knows we've seen this
-    // file's current bytes. write/edit consult this before mutating;
-    // the masker uses `full` to know whether this read subsumes
-    // earlier reads of the same path.
+    // Record the observed mtime for unchanged-read detection. The masker
+    // uses `full` to know whether this read subsumes earlier reads.
     ctx.meta = {
       full: slice.full,
       kind: "read",
@@ -180,57 +154,7 @@ export const readTool = defineTool({
   },
 })
 
-export function assertFresh(path: string, ctx: ToolContext) {
-  const err = checkFresh(path, ctx)
-  if (err !== true) throw err
-}
-
-export function isUnchanged(path: string, ctx: ToolContext) {
-  return checkFresh(path, ctx, { full: true }) === true
-}
-
-export function checkFresh(
-  path: string,
-  ctx: ToolContext,
-  opts: { full?: boolean } = {}
-): AiError | true {
-  path = normPath(ctx.cwd, path)
-  const mtime = safeStat(path)?.mtimeMs
-  if (mtime === undefined)
-    return new AiError({ code: "NOT_FOUND", message: `${path}: file not found` })
-  const messages = ctx.messages ?? []
-  let ret: AiError = freshnessError(path, "NOT_READ")
-
-  for (const { m, $p, p } of extractToolResults<FileMeta>(messages)) {
-    const id = m.id
-    if (!id || !isFileMeta(p.meta) || ctx.isMasked?.(id, $p)) continue
-    if (opts.full && !p.meta.full) continue
-    if (p.meta.mtime === mtime) return true // Fresh! The file's mtime matches what we saw at read time.
-    ret = freshnessError(path, "STALE")
-  }
-  return ret
-}
-
-/** Build the canonical "you need to read this first" error. Used by
- *  `write` (existing files only) and `edit` (always). The `code` is
- *  stable so the model can branch on it; the message tells the model
- *  what to do next; `data.reason` distinguishes never-read vs
- *  changed-since-read for downstream renderers. */
-export function freshnessError(path: string, reason: "NOT_READ" | "STALE"): AiError {
-  return new AiError({
-    code: "FILE_NOT_FRESH",
-    data: { path, reason },
-    message:
-      reason === "NOT_READ"
-        ? `${path}: read this file before mutating it.`
-        : `${path}: file changed since last read. Re-read before mutating.`,
-  })
-}
-
-/** Format a slice of file content as numbered lines plus, when the
- *  slice doesn't cover the whole file, a `<slice>` MetaPart with
- *  "showing X-Y of Z" info is included, Full reads return a plain
- *  string for the cleanest model surface. */
+/** Return plain text and line-range metadata for both full and sliced reads. */
 function formatTextSlice(
   content: string,
   { offset, limit }: { offset: number; limit: number }
@@ -254,24 +178,23 @@ function formatTextSlice(
   const end = Math.min(lines.length, start + limit)
 
   const out: string[] = []
+  let full = start === 0 && end === lines.length
   for (let i = start; i < end; i++) {
-    const lineNo = (i + 1).toString().padStart(6, " ")
     let line = lines[i]
     if (line.length > MAX_LINE_LENGTH) {
+      full = false
       line = `${line.slice(0, MAX_LINE_LENGTH)}… [line truncated, ${line.length} chars]`
     }
-    out.push(`${lineNo}\t${line}`)
+    out.push(line)
   }
 
   const text = out.join("\n")
-  const full = start === 0 && end === lines.length
-  if (full) return { content: text, full, limit: lines.length, offset: 1 }
 
   // Empty slice (overshot offset): tell the agent the offset they asked
   // for and the real file size, rather than emitting a nonsensical
   // "showing 6-5 of 5"-style range.
   const sliceMsg =
-    start === end
+    start === end && lines.length > 1
       ? `offset ${offset} past end of file (${lines.length} lines)`
       : `showing ${start + 1}-${end} of ${lines.length}`
 

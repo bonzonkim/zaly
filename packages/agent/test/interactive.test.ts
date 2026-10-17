@@ -22,8 +22,8 @@ function okStop(): StreamEvent[] {
   ]
 }
 
-describe("Agent — send/inject queueing", () => {
-  test("send() during a running turn queues, drains after natural stop", async () => {
+describe("Agent — inject/append queueing", () => {
+  test("send() during streaming waits for the response before continuing", async () => {
     const m = pendingModel()
     const agent = await loadAgent({
       messages: [{ content: "first", role: "user" }],
@@ -34,7 +34,7 @@ describe("Agent — send/inject queueing", () => {
     // Wait for the agent to actually be streaming the first turn.
     while (m.pending === 0) await tick()
 
-    // Send a follow-up while the first turn is in flight.
+    // Queue an injection without interrupting the in-flight response.
     agent.send({ content: "second", role: "user" })
 
     // Finish the first turn naturally — the loop should pick up the
@@ -49,7 +49,7 @@ describe("Agent — send/inject queueing", () => {
     expect(agent.steps).toBe(2)
   })
 
-  test("inject() during a running turn lands before the next step", async () => {
+  test("send() defaults to injecting before the next tool-loop step", async () => {
     const m = pendingModel()
     const agent = await loadAgent({
       messages: [{ content: "first", role: "user" }],
@@ -88,6 +88,230 @@ describe("Agent — send/inject queueing", () => {
     const reason = await agent.run()
     expect(reason).toBe("natural")
     expect(agent.messages.map((m) => m.role)).toEqual(["user", "assistant"])
+  })
+})
+
+describe("Agent — append delivery", () => {
+  test("append waits through tool steps and keeps a single submission's messages together", async () => {
+    const m = pendingModel()
+    const agent = await loadAgent({
+      messages: [{ content: "first", role: "user" }],
+      model: m.model,
+      tools: [Add],
+    })
+    const run = agent.run()
+    while (m.pending === 0) await tick()
+
+    agent.send(
+      [
+        { content: "follow-up one", role: "user" },
+        { content: "follow-up two", role: "user" },
+      ],
+      { mode: "append" }
+    )
+    m.release([
+      { params: { a: 1, b: 2 }, id: "c1", name: "add", type: "tool-call" },
+      { finishReason: "tool-calls", type: "finish", usage: { input: 1, output: 1 } },
+    ])
+
+    while (m.pending === 0) await tick()
+    expect(agent.messages.filter((msg) => msg.role === "user").map((msg) => msg.content)).toEqual([
+      "first",
+    ])
+    m.release(okStop())
+
+    while (m.pending === 0) await tick()
+    expect(agent.messages.map((msg) => msg.role)).toEqual([
+      "user",
+      "assistant",
+      "tool",
+      "assistant",
+      "user",
+      "user",
+    ])
+    expect(agent.messages.filter((msg) => msg.role === "user").map((msg) => msg.content)).toEqual([
+      "first",
+      "follow-up one",
+      "follow-up two",
+    ])
+    m.release(okStop())
+    expect(await run).toBe("natural")
+    expect(agent.steps).toBe(3)
+  })
+
+  test("separate append submissions wait for each preceding turn to finish naturally", async () => {
+    const m = pendingModel()
+    const agent = await loadAgent({
+      messages: [{ content: "first", role: "user" }],
+      model: m.model,
+      tools: [Add],
+    })
+    const run = agent.run()
+    while (m.pending === 0) await tick()
+
+    agent.send({ content: "follow-up one", role: "user" }, { mode: "append" })
+    agent.send({ content: "follow-up two", role: "user" }, { mode: "append" })
+    m.release(okStop())
+
+    while (m.pending === 0) await tick()
+    expect(agent.messages.filter((msg) => msg.role === "user").map((msg) => msg.content)).toEqual([
+      "first",
+      "follow-up one",
+    ])
+    m.release([
+      { params: { a: 1, b: 2 }, id: "c1", name: "add", type: "tool-call" },
+      { finishReason: "tool-calls", type: "finish", usage: { input: 1, output: 1 } },
+    ])
+
+    while (m.pending === 0) await tick()
+    expect(agent.messages.filter((msg) => msg.role === "user").map((msg) => msg.content)).toEqual([
+      "first",
+      "follow-up one",
+    ])
+    m.release(okStop())
+
+    while (m.pending === 0) await tick()
+    expect(agent.messages.map((msg) => msg.role)).toEqual([
+      "user",
+      "assistant",
+      "user",
+      "assistant",
+      "tool",
+      "assistant",
+      "user",
+    ])
+    expect(agent.messages.filter((msg) => msg.role === "user").map((msg) => msg.content)).toEqual([
+      "first",
+      "follow-up one",
+      "follow-up two",
+    ])
+    m.release(okStop())
+    expect(await run).toBe("natural")
+    expect(agent.steps).toBe(4)
+  })
+
+  test("inject takes priority over append until the injected work finishes naturally", async () => {
+    const m = pendingModel()
+    const agent = await loadAgent({
+      messages: [{ content: "first", role: "user" }],
+      model: m.model,
+      tools: [Add],
+    })
+    const run = agent.run()
+    while (m.pending === 0) await tick()
+
+    agent.send({ content: "later", role: "user" }, { mode: "append" })
+    agent.send(
+      [
+        { content: "steer one", role: "user" },
+        { content: "steer two", role: "user" },
+      ],
+      { mode: "inject" }
+    )
+    m.release(okStop())
+
+    while (m.pending === 0) await tick()
+    expect(agent.messages.filter((msg) => msg.role === "user").map((msg) => msg.content)).toEqual([
+      "first",
+      "steer one",
+      "steer two",
+    ])
+    m.release([
+      { params: { a: 1, b: 2 }, id: "c1", name: "add", type: "tool-call" },
+      { finishReason: "tool-calls", type: "finish", usage: { input: 1, output: 1 } },
+    ])
+
+    while (m.pending === 0) await tick()
+    expect(agent.messages.filter((msg) => msg.role === "user").map((msg) => msg.content)).toEqual([
+      "first",
+      "steer one",
+      "steer two",
+    ])
+    m.release(okStop())
+
+    while (m.pending === 0) await tick()
+    expect(agent.messages.filter((msg) => msg.role === "user").map((msg) => msg.content)).toEqual([
+      "first",
+      "steer one",
+      "steer two",
+      "later",
+    ])
+    m.release(okStop())
+    expect(await run).toBe("natural")
+    expect(agent.steps).toBe(4)
+  })
+
+  test("append-only send starts an idle agent without an empty model step", async () => {
+    const agent = await loadAgent({ model: mockModel([okStop()]) })
+    agent.send({ content: "follow-up", role: "user" }, { mode: "append" })
+    expect(await agent.run()).toBe("natural")
+    expect(agent.messages.map((msg) => [msg.role, msg.content])).toEqual([
+      ["user", "follow-up"],
+      ["assistant", [{ type: "text", text: "ok" }]],
+    ])
+    expect(agent.steps).toBe(1)
+  })
+
+  test("run: false defers startup and inject wins over append on the first turn", async () => {
+    const m = pendingModel()
+    const agent = await loadAgent({ model: m.model })
+    agent.send({ content: "later", role: "user" }, { mode: "append", run: false })
+    agent.send({ content: "first", role: "user" }, { run: false })
+    expect(agent.status).toBe("idle")
+    expect(m.pending).toBe(0)
+    expect(agent.messages).toEqual([])
+
+    const run = agent.run()
+    while (m.pending === 0) await tick()
+    expect(agent.messages.map((msg) => msg.content)).toEqual(["first"])
+    m.release(okStop())
+
+    while (m.pending === 0) await tick()
+    expect(agent.messages.filter((msg) => msg.role === "user").map((msg) => msg.content)).toEqual([
+      "first",
+      "later",
+    ])
+    m.release(okStop())
+    expect(await run).toBe("natural")
+  })
+
+  test("pause preserves both queues and resume still handles inject before append", async () => {
+    const m = pendingModel()
+    const agent = await loadAgent({
+      messages: [{ content: "first", role: "user" }],
+      model: m.model,
+      tools: [Add],
+    })
+    const run = agent.run()
+    while (m.pending === 0) await tick()
+    agent.send({ content: "later", role: "user" }, { mode: "append" })
+    agent.send({ content: "steer", role: "user" })
+    agent.stop({ abort: false })
+    m.release([
+      { params: { a: 1, b: 2 }, id: "c1", name: "add", type: "tool-call" },
+      { finishReason: "tool-calls", type: "finish", usage: { input: 1, output: 1 } },
+    ])
+    expect(await run).toBe("paused")
+    expect(agent.messages.filter((msg) => msg.role === "user").map((msg) => msg.content)).toEqual([
+      "first",
+    ])
+
+    const resumed = agent.run()
+    while (m.pending === 0) await tick()
+    expect(agent.messages.filter((msg) => msg.role === "user").map((msg) => msg.content)).toEqual([
+      "first",
+      "steer",
+    ])
+    m.release(okStop())
+
+    while (m.pending === 0) await tick()
+    expect(agent.messages.filter((msg) => msg.role === "user").map((msg) => msg.content)).toEqual([
+      "first",
+      "steer",
+      "later",
+    ])
+    m.release(okStop())
+    expect(await resumed).toBe("natural")
   })
 })
 

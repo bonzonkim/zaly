@@ -4,7 +4,7 @@
   "name": "Catppuccin Latte",
   "shiki": "catppuccin-latte",
   "text": "#4c4f69",
-  "subtle": "#6c6f85",
+  "subtle": "#e6e9ef",
   "ui": {
     "bg": "#eff1f5",
     "fg": "#4c4f69"
@@ -32,6 +32,7 @@
   "selection": {
     "bg": "#cccfd7"
   },
+  "diffContext": "#e6e9ef",
   "diffAdd": {
     "bg": "#cce1cd",
     "fg": "#40a02b"
