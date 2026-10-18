@@ -41,6 +41,7 @@ export type InputValue = { value: string; attachments: InputAttachment[] }
 
 const PASTE_MAX_LINES = 5
 const PASTE_MAX_CHARS = 1000
+const graphemes = new Intl.Segmenter(undefined, { granularity: "grapheme" })
 
 /** A clipboard or bracketed paste that exceeds the `pasteMax*` thresholds. **/
 type Paste = { type: "paste"; text: string }
@@ -565,8 +566,8 @@ function posToLineCol(value: string, cursor: number): { line: number; col: numbe
   const prefix = value.slice(0, cursor)
   const lineStart = prefix.lastIndexOf("\n") + 1
   return {
-    line: prefix.split("\n").length - 1,
     col: stringWidth(prefix.slice(lineStart)),
+    line: prefix.split("\n").length - 1,
   }
 }
 
@@ -578,11 +579,11 @@ function lineColToPos(value: string, line: number, col: number): number {
 
   let cells = 0
   let offset = 0
-  for (const ch of lines[clampLine]) {
-    const width = stringWidth(ch)
+  for (const { segment } of graphemes.segment(lines[clampLine])) {
+    const width = stringWidth(segment)
     if (cells + width > col) break
     cells += width
-    offset += ch.length
+    offset += segment.length
   }
   return abs + offset
 }
