@@ -79,6 +79,10 @@ export const ConfigSchema = {
                                 },
                                 description: "What messages to show in the session tree. Defaults to assistant, reasoning, and tools."
                             },
+                            transparent: {
+                                type: "boolean",
+                                description: "Make the background transparent. Defaults to false."
+                            },
                             treeHeight: {
                                 type: "number",
                                 description: "Maximum number of visible rows in the session tree."

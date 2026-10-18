@@ -1,3 +1,5 @@
+import type { Color } from "../../src/index.ts"
+
 import { RESET } from "@zaly/shared/ansi"
 import { describe, expect, test, vi } from "vitest"
 import { createCtx } from "../../src/core/ctx.ts"
@@ -263,7 +265,7 @@ describe("Box — style", () => {
     // trailing slack padding must carry the bg, so the reset needs to be
     // followed by a bg-re-apply.
     const b = new Box({ bg: "#0000ff" })
-    b.add(new Text({ content: "x", fg: "red", width: 1 }))
+    b.add(new Text({ content: "x", fg: "red" as Color<false>, width: 1 }))
     const out = await b.render(ctx(3))
     expect(out).toHaveLength(1)
     expect(out[0]).toBe("\x1b[48;2;0;0;255m\x1b[31mx\x1b[0m\x1b[48;2;0;0;255m  \x1b[0m")

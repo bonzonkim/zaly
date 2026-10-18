@@ -3,26 +3,12 @@
   "id": "min-dark",
   "name": "Min Dark",
   "shiki": "min-dark",
-  "text": "#b392f0",
-  "subtle": "#1f1f1f",
-  "ui": {
-    "bg": "#1f1f1f",
-    "fg": "#b392f0"
-  },
+  "fg": "#b392f0",
+  "bg": "#1f1f1f",
   "primary": "#CCC",
   "accent": "#fafafa",
   "muted": "#5c5c5c",
   "border": "#5c5c5c",
-  "code": {
-    "bg": "#1f1f1f"
-  },
-  "mdCodeBlock": {
-    "bg": "#1f1f1f"
-  },
-  "highlight": {
-    "bg": "#212121"
-  },
-  "diffContext": "#1f1f1f",
   "diffAdd": {
     "bg": "#273322"
   },
@@ -49,8 +35,5 @@
   },
   "mdLink": {
     "fg": "#ffab70"
-  },
-  "mdCode": {
-    "fg": "#9db1c5"
   }
 }

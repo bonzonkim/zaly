@@ -3,12 +3,8 @@
   "id": "catppuccin-frappe",
   "name": "Catppuccin Frappé",
   "shiki": "catppuccin-frappe",
-  "text": "#c6d0f5",
-  "subtle": "#292c3c",
-  "ui": {
-    "bg": "#303446",
-    "fg": "#c6d0f5"
-  },
+  "fg": "#c6d0f5",
+  "bg": "#303446",
   "primary": "#8caaee",
   "accent": "#99d1db",
   "success": "#a6d189",
@@ -17,22 +13,9 @@
   "error": "#e78284",
   "muted": "#626880",
   "border": "#626880",
-  "code": {
-    "bg": "#292c3c"
-  },
-  "mdCodeBlock": {
-    "bg": "#292c3c"
-  },
-  "overlay": {
-    "bg": "#292c3c"
-  },
-  "highlight": {
-    "bg": "#494e63"
-  },
   "selection": {
     "bg": "#494e63"
   },
-  "diffContext": "#292c3c",
   "diffAdd": {
     "bg": "#485353",
     "fg": "#a6d189"
@@ -115,9 +98,6 @@
   },
   "mdListBullet": {
     "fg": "#81c8be"
-  },
-  "mdCode": {
-    "fg": "#a6d189"
   },
   "mdHr": {
     "fg": "#81c8be"

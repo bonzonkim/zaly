@@ -504,6 +504,9 @@ export interface ProviderOptions {
  *
  *  Add new axes here as they surface; start minimal. */
 export type Quirks = {
+  /** Header carrying the conversation identity. Independent of prompt caching. */
+  sessionHeader?: string
+
   /** Which wire field carries the max-output-tokens cap, per adapter
    *  family.
    *

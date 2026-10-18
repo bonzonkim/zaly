@@ -13,7 +13,7 @@ import { barplot, bench, summary } from "mitata"
 import { styleBuilder } from "../src/style/builder.ts"
 import { defaultTheme } from "../src/themes/registry.ts"
 
-const s = styleBuilder(defaultTheme)
+const s = styleBuilder<true>(defaultTheme)
 
 barplot(async () => {
   summary(async () => {

@@ -3,12 +3,8 @@
   "id": "kanagawa-wave",
   "name": "Kanagawa Wave",
   "shiki": "kanagawa-wave",
-  "text": "#DCD7BA",
-  "subtle": "#1F1F28",
-  "ui": {
-    "bg": "#1F1F28",
-    "fg": "#DCD7BA"
-  },
+  "fg": "#DCD7BA",
+  "bg": "#1F1F28",
   "primary": "#6A9589",
   "accent": "#957FB8",
   "success": "#76946A",
@@ -17,22 +13,9 @@
   "error": "#E82424",
   "muted": "#727169",
   "border": "#16161D",
-  "code": {
-    "bg": "#1F1F28"
-  },
-  "mdCodeBlock": {
-    "bg": "#1F1F28"
-  },
-  "overlay": {
-    "bg": "#1F1F28"
-  },
-  "highlight": {
-    "bg": "#223249"
-  },
   "selection": {
     "bg": "#223249"
   },
-  "diffContext": "#1F1F28",
   "diffAdd": {
     "bg": "#252928",
     "fg": "#76946A"
@@ -108,9 +91,6 @@
   },
   "mdQuote": {
     "italic": true
-  },
-  "mdCode": {
-    "fg": "#98BB6C"
   },
   "mdHr": {
     "bold": true,

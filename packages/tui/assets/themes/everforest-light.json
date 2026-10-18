@@ -3,12 +3,8 @@
   "id": "everforest-light",
   "name": "Everforest Light",
   "shiki": "everforest-light",
-  "text": "#5c6a72",
-  "subtle": "#f4f0d9",
-  "ui": {
-    "bg": "#fdf6e3",
-    "fg": "#5c6a72"
-  },
+  "fg": "#5c6a72",
+  "bg": "#fdf6e3",
   "primary": "#8da101",
   "accent": "#a9b639",
   "success": "#8da101",
@@ -17,22 +13,9 @@
   "error": "#f1706f",
   "muted": "#5c6a72",
   "border": "#fdf6e3",
-  "code": {
-    "bg": "#f4f0d9"
-  },
-  "mdCodeBlock": {
-    "bg": "#f4f0d9"
-  },
-  "overlay": {
-    "bg": "#fdf6e3"
-  },
-  "highlight": {
-    "bg": "#efe9d5"
-  },
   "selection": {
     "bg": "#efe9d5"
   },
-  "diffContext": "#f4f0d9",
   "diffAdd": {
     "bg": "#e2ecd5",
     "fg": "#8da101"
@@ -108,9 +91,6 @@
   },
   "mdLink": {
     "fg": "#df69ba"
-  },
-  "mdCode": {
-    "fg": "#8da101"
   },
   "mdHr": {
     "bold": true,

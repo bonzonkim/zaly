@@ -14,8 +14,8 @@ async function demo(label: string, name: string): Promise<void> {
     { gap: 1 },
     box(
       { bg: "primary", padding: [0, 1] },
-      text(({ style }) => style.brightWhite.bold("@zaly/tui")),
-      text(({ style }) => style.brightWhite("  agent harness · dev build"))
+      text(({ style }) => style.mdLink.bold("@zaly/tui")),
+      text(({ style }) => style.title("  agent harness · dev build"))
     ),
     box(
       { flexDirection: "row", gap: 1 },

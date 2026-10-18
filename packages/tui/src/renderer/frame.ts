@@ -2,7 +2,7 @@ import type { RenderCtx } from "../core/ctx.ts"
 import type { Terminal } from "./terminal.ts"
 
 import { sliceAnsi, stringWidth } from "@zaly/shared/ansi"
-import { stripAnsiBg } from "../style/ansi.ts"
+import { applyDefaultColors, RESET, stripAnsiBg } from "../style/ansi.ts"
 
 export type FrameOp = (terminal: Terminal) => void
 
@@ -30,6 +30,17 @@ function sliceLine(
 export class Frame {
   #base: (string | undefined)[] = []
   #current: (string | undefined)[] = []
+  #colors = { bg: "", fg: "" }
+
+  get defaultStyle(): string {
+    return this.#colors.fg + this.#colors.bg
+  }
+
+  setDefaultStyle(fg: string, bg: string): void {
+    if (this.#colors.fg === fg && this.#colors.bg === bg) return
+    this.#colors = { bg, fg }
+    this.#current.fill(undefined)
+  }
 
   constructor(readonly terminal: Terminal) {}
 
@@ -41,7 +52,7 @@ export class Frame {
   begin(): RenderFrame {
     const rows = this.terminal.rows
     if (this.#current.length !== rows || this.#base.length !== rows) this.reset(rows)
-    return new RenderFrame(this.terminal, this.#current, this.#base)
+    return new RenderFrame(this.terminal, this.#current, this.#base, this.#colors)
   }
 
   slice(
@@ -61,7 +72,8 @@ export class RenderFrame {
   constructor(
     readonly terminal: Terminal,
     readonly current: (string | undefined)[],
-    readonly base: (string | undefined)[]
+    readonly base: (string | undefined)[],
+    readonly defaults = { bg: "", fg: "" }
   ) {
     this.#next = base.map((row) => row ?? "")
   }
@@ -124,12 +136,15 @@ export class RenderFrame {
   }
 
   flush(): void {
+    const defaults = this.defaults.fg + this.defaults.bg
+    const restore = defaults ? RESET + defaults : ""
     for (let i = 0; i < this.#next.length; i++) {
       const next = this.#next[i]
       if (this.current[i] === next) continue
       const row = i + 1
+      const content = applyDefaultColors(next.trimEnd(), this.defaults.fg, this.defaults.bg)
       this.queue((terminal) => {
-        terminal.write(terminal.moveTo(row, 1) + terminal.clearLine() + next.trimEnd())
+        terminal.write(terminal.moveTo(row, 1) + terminal.clearLine() + content + restore)
       })
       this.current[i] = next
     }
@@ -169,8 +184,15 @@ export class RenderFrame {
     const ops = this.#ops.length
     this.flush()
     const rows = this.#ops.length - ops
-    for (const op of this.#ops) op(this.terminal)
-    this.#ops.length = 0
+    const defaults = this.defaults.fg + this.defaults.bg
+    if (this.#ops.length === 0) return { ops, rows }
+    if (defaults) this.terminal.write(RESET + defaults)
+    try {
+      for (const op of this.#ops) op(this.terminal)
+    } finally {
+      if (defaults) this.terminal.write(RESET)
+      this.#ops.length = 0
+    }
     return { ops, rows }
   }
 }

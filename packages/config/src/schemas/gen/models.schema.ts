@@ -72,6 +72,10 @@ export const ModelsSchema = {
             Quirks: {
                 type: "object",
                 properties: {
+                    sessionHeader: {
+                        type: "string",
+                        description: "Header carrying the conversation identity. Independent of prompt caching."
+                    },
                     maxTokensField: {
                         type: "string",
                         "enum": [

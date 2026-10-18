@@ -3,12 +3,8 @@
   "id": "gruvbox-dark-medium",
   "name": "Gruvbox Dark Medium",
   "shiki": "gruvbox-dark-medium",
-  "text": "#ebdbb2",
-  "subtle": "#282828",
-  "ui": {
-    "bg": "#282828",
-    "fg": "#ebdbb2"
-  },
+  "fg": "#ebdbb2",
+  "bg": "#282828",
   "primary": "#83a598",
   "accent": "#458588",
   "success": "#98971a",
@@ -17,22 +13,9 @@
   "error": "#cc241d",
   "muted": "#928374",
   "border": "#3c3836",
-  "code": {
-    "bg": "#282828"
-  },
-  "mdCodeBlock": {
-    "bg": "#282828"
-  },
-  "overlay": {
-    "bg": "#282828"
-  },
-  "highlight": {
-    "bg": "#384539"
-  },
   "selection": {
     "bg": "#384539"
   },
-  "diffContext": "#282828",
   "diffAdd": {
     "bg": "#434428",
     "fg": "#b8bb26"
@@ -106,8 +89,5 @@
   },
   "mdLink": {
     "fg": "#d3869b"
-  },
-  "mdCode": {
-    "fg": "#8ec07c"
   }
 }

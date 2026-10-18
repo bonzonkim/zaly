@@ -3,12 +3,8 @@
   "id": "synthwave-84",
   "name": "Synthwave '84",
   "shiki": "synthwave-84",
-  "text": "#bbbbbb",
-  "subtle": "#262335",
-  "ui": {
-    "bg": "#262335",
-    "fg": "#bbbbbb"
-  },
+  "fg": "#bbbbbb",
+  "bg": "#262335",
   "primary": "#f97e72",
   "accent": "#ff7edb",
   "success": "#72f1b8",
@@ -16,22 +12,9 @@
   "warn": "#63c89e",
   "error": "#fe4450",
   "border": "#495495",
-  "code": {
-    "bg": "#262335"
-  },
-  "mdCodeBlock": {
-    "bg": "#262335"
-  },
-  "overlay": {
-    "bg": "#191723"
-  },
-  "highlight": {
-    "bg": "#413f4e"
-  },
   "selection": {
     "bg": "#413f4e"
   },
-  "diffContext": "#262335",
   "diffAdd": {
     "bg": "#204d4a"
   },
@@ -94,9 +77,5 @@
   "mdQuote": {
     "italic": true,
     "fg": "#999598"
-  },
-  "mdCode": {
-    "italic": true,
-    "fg": "#72f1b8"
   }
 }

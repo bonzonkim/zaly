@@ -456,6 +456,7 @@ export class Agent extends Emitter<AgentEvents> {
       cacheKey: this.ctx.session.id,
       messages: [...this.ctx.messages],
       prompt: this.prompt,
+      sessionId: this.ctx.session.id,
       tools: this.tools,
     } satisfies Context
     await this.emitSerial("context", context)

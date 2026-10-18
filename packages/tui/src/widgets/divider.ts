@@ -3,7 +3,7 @@ import type { Text } from "./text.ts"
 
 import { text } from "./text.ts"
 
-export type DividerState = Style & {
+export type DividerState = Style<false> & {
   char?: string
   length?: number
 }

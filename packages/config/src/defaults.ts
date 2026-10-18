@@ -15,6 +15,7 @@ export const defaultSettings = {
     reasoning: true,
     sessionTree: ["assistant", "reasoning", "tools"],
     theme: "tokyonight-moon",
+    transparent: false,
     treeHeight: 20,
   },
   compaction: {

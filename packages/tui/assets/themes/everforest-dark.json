@@ -3,12 +3,8 @@
   "id": "everforest-dark",
   "name": "Everforest Dark",
   "shiki": "everforest-dark",
-  "text": "#d3c6aa",
-  "subtle": "#272e33",
-  "ui": {
-    "bg": "#2d353b",
-    "fg": "#d3c6aa"
-  },
+  "fg": "#d3c6aa",
+  "bg": "#2d353b",
   "primary": "#a7c080",
   "accent": "#899e6f",
   "success": "#a7c080",
@@ -17,22 +13,9 @@
   "error": "#da6362",
   "muted": "#859289",
   "border": "#2d353b",
-  "code": {
-    "bg": "#272e33"
-  },
-  "mdCodeBlock": {
-    "bg": "#272e33"
-  },
-  "overlay": {
-    "bg": "#2d353b"
-  },
-  "highlight": {
-    "bg": "#414b51"
-  },
   "selection": {
     "bg": "#414b51"
   },
-  "diffContext": "#272e33",
   "diffAdd": {
     "bg": "#354947",
     "fg": "#a7c080"
@@ -108,9 +91,6 @@
   },
   "mdLink": {
     "fg": "#d699b6"
-  },
-  "mdCode": {
-    "fg": "#a7c080"
   },
   "mdHr": {
     "bold": true,

@@ -261,6 +261,15 @@ export async function editConfig(app: App, opts: { scope?: "user" | "project" } 
       name: "Show Images",
       prop: ["ui", "images"],
     }),
+    option({
+      desc: "Make the background transparent",
+      name: "Transparent Background",
+      prop: ["ui", "transparent"],
+      async toggle() {
+        this.value = !this.value
+        app.renderer.transparent = this.value
+      },
+    }),
     toggle({
       desc: "Copy selected text to clipboard (only relevant for fullscreen mode)",
       name: "Copy on Select",

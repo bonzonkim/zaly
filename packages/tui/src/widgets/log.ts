@@ -23,19 +23,19 @@ export interface LogState {
   /** Single-glyph icon for `icon` / `prompt` styles. */
   icon?: string
   /** Theme slot or color name used to tint the prefix. */
-  color?: Color
+  color?: Color<false>
   /** Extra plain text prepended to the auto prefix (unstyled). */
   prefix?: string
   /** Theme slot or color name for the body text. Defaults by level, except */
-  textColor?: Color
+  textColor?: Color<false>
   markdown?: boolean
 }
 
 interface LevelDefaults {
   style: LogStyle
   icon?: string
-  color?: Color
-  textColor?: Color
+  color?: Color<false>
+  textColor?: Color<false>
 }
 
 /** Per-level default prefix style + icon + color. Matches rekal's
@@ -70,12 +70,12 @@ function renderPrefix(s: LogState, ctx: RenderCtx): string {
 
   let icon = s.icon ?? base.icon ?? ""
   icon = icon === "" ? "" : `${icon}${" ".repeat(2 - stringWidth(icon))}`
-  const color: Color = s.color ?? base.color ?? "inherit"
+  const color: Color<false> = s.color ?? base.color ?? "inherit"
 
   // text doesn't get a prefix
   let styledPrefix = ""
   if (ls === "badge") {
-    styledPrefix = style.bg(color).fg("black").bold(` ${s.level} `)
+    styledPrefix = style.bg(color).bold(` ${s.level} `)
   } else if (ls === "icon") {
     styledPrefix = style.fg(color)(icon)
   } else if (ls === "prompt") {

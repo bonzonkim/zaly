@@ -1,3 +1,5 @@
+import type { ThemeKey } from "@zaly/tui"
+
 import { createCtx } from "@zaly/tui"
 import { loadTheme, themeRegistry } from "@zaly/tui/themes"
 import { box } from "@zaly/tui/widgets/box"
@@ -35,11 +37,11 @@ for (let i = 0; i < names.length; i += CHUNK) {
   for (const name of names.slice(i, i + CHUNK)) {
     const theme = await loadTheme(name)
     const panel = box(
-      { border: true, borderTitle: name, borderTitleStyle: theme.borderTitle, style: "ui" },
+      { border: true, borderTitle: name, borderTitleStyle: "borderTitle", style: "ui" },
       text(({ style }) =>
         Object.keys(theme)
           .filter((k) => k !== "bg" && k !== "shiki" && k !== "id" && k !== "name")
-          .map((k) => style.add(k)(k))
+          .map((k) => style.add(k as ThemeKey)(k))
           .join("\n")
       )
     )

@@ -110,11 +110,11 @@ const icons = {
 }
 
 const roleStyles = {
-  assistant: { role: "success", text: "text" },
+  assistant: { role: "success", text: "fg" },
   reasoning: { role: "quiet", text: "quiet" },
   system: { role: "quiet", text: "quiet" },
-  tool: { role: "info", text: "text" },
-  user: { role: "primary", text: "text" },
+  tool: { role: "info", text: "fg" },
+  user: { role: "primary", text: "fg" },
 } as const satisfies Record<string, { text: AnyStyle; role: AnyStyle }>
 
 function clean(s: string): string {
@@ -212,7 +212,7 @@ export async function sessionTree(app: App, opts: SessionTreeOpts = {}) {
   const sessionHead = session.messages.at(-1)?.id ?? session.head
 
   const active = new Set<string>()
-  for (let node = session.head ? sessionNodes.get(session.head) : undefined; node; ) {
+  for (let node = session.head ? sessionNodes.get(session.head) : undefined; node;) {
     active.add(node.uuid)
     node = node.parentUuid ? sessionNodes.get(node.parentUuid) : undefined
   }

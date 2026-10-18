@@ -22,6 +22,7 @@ import {
   truncateText,
 } from "../content/compose.ts"
 import { ContentTransform } from "../content/transform.ts"
+import { requestHeaders } from "../utils/headers.ts"
 
 // ── Content transform ───────────────────────────────────────────────────
 //
@@ -99,13 +100,12 @@ export function createAnthropic(config: ProviderOptions = {}): Provider<"anthrop
       const auth = (): Record<string, string> => (apiKey?.key ? { "x-api-key": apiKey.key } : {})
       const response = await doFetch(`${baseUrl}/messages`, {
         body: safeStringify(body),
-        headers: {
-          "Content-Type": "application/json",
-          "anthropic-version": "2023-06-01",
-          ...auth(),
-          ...apiKey?.headers,
-          ...config.headers,
-        },
+        headers: requestHeaders(
+          req,
+          { "anthropic-version": "2023-06-01", ...auth() },
+          apiKey?.headers,
+          config.headers
+        ),
         method: "POST",
         signal: req.opts.signal,
       })

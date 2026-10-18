@@ -1,6 +1,6 @@
 import { hasAnsi, RESET, splitAnsi } from "@zaly/shared/ansi"
 import { describe, expect, test } from "vitest"
-import { hyperlink, stripAnsiBg } from "../../src/style/ansi.ts"
+import { applyDefaultColors, hyperlink, stripAnsiBg } from "../../src/style/ansi.ts"
 import { openStyle } from "../../src/style/style.ts"
 import { defaultTheme } from "../../src/themes/registry.ts"
 
@@ -99,6 +99,31 @@ describe("openStyle", () => {
 
   test("without a theme, theme-only names silently drop", () => {
     expect(openStyle({ fg: "primary" })).toBe("")
+  })
+})
+
+describe("applyDefaultColors", () => {
+  const fg = "\x1b[31m"
+  const bg = "\x1b[44m"
+
+  test.each([
+    ["plain", "plain"],
+    ["a\x1b[0mb", "a\x1b[0;31;44mb"],
+    ["a\x1b[mb", "a\x1b[;31;44mb"],
+    ["\x1b[1;39;49m", "\x1b[1;31;44m"],
+    ["\x1b[0;32;49m", "\x1b[0;31;44;32;44m"],
+    ["\x1b[38;2;0;39;49m", "\x1b[38;2;0;39;49m"],
+    ["\x1b[48;5;49m", "\x1b[48;5;49m"],
+    ["\x1b[58;2;0;39;49;39m", "\x1b[58;2;0;39;49;31m"],
+    ["\x1b[38:2::0:39:49m", "\x1b[38:2::0:39:49m"],
+  ])("resolves defaults in %j", (input, expected) => {
+    expect(applyDefaultColors(input, fg, bg)).toBe(expected)
+  })
+
+  test("only replaces configured colors", () => {
+    expect(applyDefaultColors("\x1b[39;49m", fg, "")).toBe("\x1b[31;49m")
+    expect(applyDefaultColors("\x1b[39;49m", "", bg)).toBe("\x1b[39;44m")
+    expect(applyDefaultColors("\x1b[0;39;49m", "", "")).toBe("\x1b[0;39;49m")
   })
 })
 

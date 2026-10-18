@@ -3,12 +3,8 @@
   "id": "catppuccin-latte",
   "name": "Catppuccin Latte",
   "shiki": "catppuccin-latte",
-  "text": "#4c4f69",
-  "subtle": "#e6e9ef",
-  "ui": {
-    "bg": "#eff1f5",
-    "fg": "#4c4f69"
-  },
+  "fg": "#4c4f69",
+  "bg": "#eff1f5",
   "primary": "#1e66f5",
   "accent": "#04a5e5",
   "success": "#40a02b",
@@ -17,22 +13,9 @@
   "error": "#d20f39",
   "muted": "#6c6f85",
   "border": "#acb0be",
-  "code": {
-    "bg": "#e6e9ef"
-  },
-  "mdCodeBlock": {
-    "bg": "#e6e9ef"
-  },
-  "overlay": {
-    "bg": "#e6e9ef"
-  },
-  "highlight": {
-    "bg": "#cccfd7"
-  },
   "selection": {
     "bg": "#cccfd7"
   },
-  "diffContext": "#e6e9ef",
   "diffAdd": {
     "bg": "#cce1cd",
     "fg": "#40a02b"
@@ -115,9 +98,6 @@
   },
   "mdListBullet": {
     "fg": "#179299"
-  },
-  "mdCode": {
-    "fg": "#40a02b"
   },
   "mdHr": {
     "fg": "#179299"

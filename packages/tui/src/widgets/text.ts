@@ -28,7 +28,7 @@ import { calcLayout, formatText } from "../layout/text.ts"
  */
 export type TextContent = Reactive<string> | ((ctx: RenderCtx) => MaybePromise<Reactive<string>>)
 
-export interface TextStyle extends Style {
+export interface TextStyle extends Style<false> {
   content: TextContent
   wrap?: "word" | "char" | "none"
 }

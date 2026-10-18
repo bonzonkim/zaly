@@ -12,6 +12,9 @@ export interface Context {
   messages: Message[]
   /** Tools available for the model to call this turn. */
   tools?: Tool[]
+  /** Stable conversation identifier, including across turns and resumes.
+   *  Sent only when the provider declares a session-header quirk. */
+  sessionId?: string
   /** Stable identity used by providers to keep prompt-cache routing consistent. */
   cacheKey?: string
 }

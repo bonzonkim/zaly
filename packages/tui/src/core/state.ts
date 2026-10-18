@@ -24,7 +24,7 @@ export type State<T extends object = object> = T & BaseState
  *  interfaces extend this so base-state concerns and pure styling stay
  *  cleanly separated at the type level without each widget having to
  *  compose the two manually. */
-export type StyleState = Style
+export type StyleState = Style<false>
 
 export interface LayoutState {
   visible?: Reactive<boolean>

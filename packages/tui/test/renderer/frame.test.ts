@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest"
+import { afterEach, describe, expect, test } from "vitest"
 import { createCtx } from "../../src/core/ctx.ts"
 import { Frame } from "../../src/renderer/frame.ts"
 import { Terminal } from "../../src/renderer/terminal.ts"
@@ -16,6 +16,73 @@ function testFrame() {
     frame: new Frame(terminal).begin(),
   }
 }
+
+describe("Frame default colors", () => {
+  const terminals: Terminal[] = []
+  afterEach(() => {
+    for (const terminal of terminals) terminal.stop()
+    terminals.length = 0
+  })
+
+  function setup() {
+    const writer = new MockWriter(20, 5)
+    const terminal = new Terminal({ hookSignals: false, stdin: new MockReader(), stdout: writer })
+    terminals.push(terminal)
+    terminal.start()
+    writer.clear()
+    const frame = new Frame(terminal)
+    frame.setDefaultStyle("\x1b[31m", "\x1b[44m")
+    return { frame, terminal, writer }
+  }
+
+  test("keeps raw mirrors and does not write unchanged frames", () => {
+    const { frame, writer } = setup()
+    const paint = frame.begin()
+    paint.set(5, "hello")
+    paint.commitBase()
+    paint.paint()
+    expect(writer.all.startsWith("\x1b[0m\x1b[31m\x1b[44m")).toBe(true)
+    expect(writer.all.endsWith("\x1b[0m")).toBe(true)
+    expect(frame.slice(5, undefined, undefined)?.line).toBe("hello")
+    writer.clear()
+    expect(frame.begin().get(5)).toBe("hello")
+    expect(frame.begin().paint()).toEqual({ ops: 0, rows: 0 })
+    expect(writer.all).toBe("")
+  })
+
+  test("repaints when only default colors change", () => {
+    const { frame, writer } = setup()
+    const paint = frame.begin()
+    paint.set(5, "same")
+    paint.commitBase()
+    paint.paint()
+    writer.clear()
+    frame.setDefaultStyle("\x1b[32m", "\x1b[45m")
+    expect(frame.begin().paint().rows).toBe(5)
+    expect(writer.all).toContain("same")
+    expect(writer.all).toContain("\x1b[32m\x1b[45m")
+  })
+
+  test("establishes defaults around queued scroll operations", () => {
+    const { frame, terminal, writer } = setup()
+    frame.begin().paint()
+    writer.clear()
+    const paint = frame.begin()
+    paint.scrollUp(1, 5, 1, (t) => t.write(t.scrollUp(1)))
+    paint.paint()
+    expect(writer.all).toBe(`\x1b[0m\x1b[31m\x1b[44m${terminal.scrollUp(1)}\x1b[0m`)
+  })
+
+  test("restores terminal defaults if a queued operation throws", () => {
+    const { frame, writer } = setup()
+    const paint = frame.begin()
+    paint.queue(() => {
+      throw new Error("failed")
+    })
+    expect(() => paint.paint()).toThrow("failed")
+    expect(writer.all.endsWith("\x1b[0m")).toBe(true)
+  })
+})
 
 describe("RenderFrame.slice", () => {
   test("returns a full line plus the clamped selected range", () => {

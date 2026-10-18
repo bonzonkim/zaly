@@ -3,32 +3,15 @@
   "id": "vesper",
   "name": "Vesper",
   "shiki": "vesper",
-  "text": "#FFF",
-  "subtle": "#101010",
-  "ui": {
-    "bg": "#101010",
-    "fg": "#FFF"
-  },
+  "fg": "#FFF",
+  "bg": "#101010",
   "primary": "#FFC799",
   "accent": "#FFCFA8",
   "warn": "#FFC799",
   "error": "#FF8080",
-  "code": {
-    "bg": "#101010"
-  },
-  "mdCodeBlock": {
-    "bg": "#101010"
-  },
-  "overlay": {
-    "bg": "#101010"
-  },
-  "highlight": {
-    "bg": "#333333"
-  },
   "selection": {
     "bg": "#333333"
   },
-  "diffContext": "#101010",
   "diffAdd": {
     "bg": "#1b2421",
     "fg": "#99FFE4"

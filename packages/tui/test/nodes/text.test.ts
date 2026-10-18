@@ -1,3 +1,5 @@
+import type { Color } from "../../src/index.ts"
+
 import { describe, expect, test } from "vitest"
 import { createCtx } from "../../src/core/ctx.ts"
 import { Box } from "../../src/widgets/box.ts"
@@ -47,12 +49,12 @@ describe("Text", () => {
   })
 
   test("fg applied to each row at natural width", async () => {
-    const t = new Text({ content: "hi", fg: "red" })
+    const t = new Text({ content: "hi", fg: "red" as Color<false> })
     expect(await t.render(ctx(10))).toEqual(["\x1b[31mhi\x1b[0m"])
   })
 
   test("bold + fg combined at natural width", async () => {
-    const t = new Text({ bold: true, content: "x", fg: "red" })
+    const t = new Text({ bold: true, content: "x", fg: "red" as Color<false> })
     expect(await t.render(ctx(10))).toEqual(["\x1b[1;31mx\x1b[0m"])
   })
 

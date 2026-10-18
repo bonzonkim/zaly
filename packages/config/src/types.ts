@@ -37,6 +37,8 @@ export type ResolvedConfig = {
     theme: string
     /** What messages to show in the session tree. Defaults to assistant, reasoning, and tools. */
     sessionTree: ("assistant" | "reasoning" | "tools" | "system")[]
+    /** Make the background transparent. Defaults to false. */
+    transparent: boolean
     /** Maximum number of visible rows in the session tree. */
     treeHeight: number
   }

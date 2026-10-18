@@ -1,6 +1,6 @@
 {
   "accent": "#b15c00",
-  "blend": "#e1e2e7",
+  "bg": "#e1e2e7",
   "border": "#4094a3",
   "borderTitle": {
     "bold": true,
@@ -27,6 +27,7 @@
   },
   "divider": "#4094a3",
   "error": "#c64343",
+  "fg": "#3760bf",
   "gutter": "#a8aecb",
   "highlight": {
     "bg": "#c4c8da",
@@ -114,8 +115,7 @@
   "selection": {
     "bg": "#b7c1e3"
   },
-  "shiki": "tokyo-night",
-  "subtle": "#d0d5e3",
+  "shiki": "github-light",
   "success": "#118c74",
   "syntaxBoolean": {
     "fg": "#188092"
@@ -144,13 +144,12 @@
   "syntaxString": {
     "fg": "#587539"
   },
-  "text": "#3760bf",
   "title": {
     "bold": true,
     "fg": "#2e7de9"
   },
   "ui": {
-    "bg": "#e1e2e7",
+    "bg": "#d0d5e3",
     "fg": "#3760bf"
   },
   "warn": "#8c6c3e"

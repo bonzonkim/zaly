@@ -41,6 +41,7 @@ export const builtinOverrides: Record<string, Partial<ModelProvider> | undefined
       responsesInclude: ["reasoning.encrypted_content"],
       responsesStore: false,
       responsesSystemAs: "instructions",
+      sessionHeader: "session-id",
     },
     oauth: async () => import("../auth/openai-codex.ts").then((m) => m.codexOauth),
     // The codex backend serves the codex-family models plus a curated
@@ -72,6 +73,10 @@ export const builtinOverrides: Record<string, Partial<ModelProvider> | undefined
       )
     },
   },
+  "opencode-go": {
+    quirks: { sessionHeader: "x-opencode-session" },
+  },
+
   // ── Native OpenAI ─────────────────────────────────────────────────
   openai: {
     quirks: {

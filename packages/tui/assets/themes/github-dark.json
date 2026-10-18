@@ -3,12 +3,8 @@
   "id": "github-dark",
   "name": "GitHub Dark",
   "shiki": "github-dark",
-  "text": "#e1e4e8",
-  "subtle": "#2f363d",
-  "ui": {
-    "bg": "#24292e",
-    "fg": "#e1e4e8"
-  },
+  "fg": "#e1e4e8",
+  "bg": "#24292e",
   "primary": "#79b8ff",
   "accent": "#c8e1ff",
   "success": "#34d058",
@@ -17,22 +13,9 @@
   "error": "#f97583",
   "muted": "#959da5",
   "border": "#1b1f23",
-  "code": {
-    "bg": "#2f363d"
-  },
-  "mdCodeBlock": {
-    "bg": "#2f363d"
-  },
-  "overlay": {
-    "bg": "#1f2428"
-  },
-  "highlight": {
-    "bg": "#284566"
-  },
   "selection": {
     "bg": "#284566"
   },
-  "diffContext": "#2f363d",
   "diffAdd": {
     "bg": "#254132",
     "fg": "#85e89d"
@@ -113,9 +96,6 @@
   },
   "mdQuote": {
     "fg": "#85e89d"
-  },
-  "mdCode": {
-    "fg": "#79b8ff"
   },
   "mdHr": {
     "bold": true,

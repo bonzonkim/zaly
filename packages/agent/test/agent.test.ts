@@ -1,8 +1,9 @@
-import type { Message } from "@zaly/ai"
+import type { Message, ProviderRequest } from "@zaly/ai"
 
 import { defineTool, stringifyContent } from "@zaly/ai"
 import { Type } from "typebox"
 import { describe, expect, test } from "vitest"
+import { MemoryStore } from "../src/session/index.ts"
 import { loadAgent, mockModel, runAgent, throwingModel } from "./helpers.ts"
 
 const Add = defineTool({
@@ -12,19 +13,61 @@ const Add = defineTool({
 })
 
 describe("Agent — no tool calls", () => {
-  test("uses the session id as the provider cache key", async () => {
+  test("uses the session id for conversation identity and provider caching", async () => {
     const model = mockModel([
       [{ finishReason: "stop", type: "finish", usage: { input: 10, output: 2 } }],
     ])
     const agent = await loadAgent({ messages: [{ content: "hi", role: "user" }], model })
     let cacheKey: string | undefined
+    let sessionId: string | undefined
     agent.on("context", (ctx) => {
       cacheKey = ctx.cacheKey
+      sessionId = ctx.sessionId
     })
 
     await agent.run()
 
     expect(cacheKey).toBe(agent.ctx.session.id)
+    expect(sessionId).toBe(agent.ctx.session.id)
+  })
+
+  test("keeps conversation identity across turns, compaction, and resume", async () => {
+    const finish = {
+      finishReason: "stop",
+      type: "finish",
+      usage: { input: 10, output: 2 },
+    } as const
+    const model = mockModel([
+      [{ delta: "Hello", type: "text-delta" }, finish],
+      [{ delta: "Summary", type: "text-delta" }, finish],
+      [{ delta: "Next", type: "text-delta" }, finish],
+      [{ delta: "Resumed", type: "text-delta" }, finish],
+    ])
+    const requests: ProviderRequest[] = []
+    const stream = model.provider.stream
+    model.provider.stream = (req) => {
+      requests.push(req)
+      return stream(req)
+    }
+    const store = new MemoryStore()
+    const agent = await loadAgent({
+      compaction: { keepTokens: 0 },
+      messages: [{ content: "hi", role: "user" }],
+      model,
+      session: { store },
+    })
+    await agent.run()
+    await agent.compact()
+    agent.send({ content: "next", role: "user" })
+    await agent.run()
+    const resumed = await loadAgent({ model, session: { store } })
+    resumed.send({ content: "continue", role: "user" })
+    await resumed.run()
+
+    expect(requests).toHaveLength(4)
+    expect(requests.map((r) => r.ctx.sessionId)).toEqual(Array(4).fill(agent.session.id))
+    expect(resumed.session.id).toBe(agent.session.id)
+    expect(requests[1].opts.caching).toBe(false)
   })
 
   test("completes in one step when the model stops", async () => {

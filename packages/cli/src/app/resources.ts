@@ -90,7 +90,7 @@ class Resources {
         else if (type === "commands") name = basename(name, ".md")
         const ref = this.enabled ? "mdListChecked" : "mdListUnchecked"
         const marker = s.add(ref)(this.enabled ? icons.checked : icons.unchecked)
-        return `${marker} ${s[this.enabled ? "text" : "muted"](name)}`
+        return `${marker} ${this.enabled ? name : s.muted(name)}`
       },
       text: path,
     }))

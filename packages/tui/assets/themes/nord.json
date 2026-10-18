@@ -3,12 +3,8 @@
   "id": "nord",
   "name": "Nord",
   "shiki": "nord",
-  "text": "#d8dee9ff",
-  "subtle": "#4c566a",
-  "ui": {
-    "bg": "#2e3440ff",
-    "fg": "#d8dee9ff"
-  },
+  "fg": "#d8dee9ff",
+  "bg": "#2e3440ff",
   "primary": "#88c0d0",
   "accent": "#88c0d0",
   "success": "#a3be8c",
@@ -17,22 +13,9 @@
   "error": "#bf616a",
   "muted": "#4c566a",
   "border": "#3b4252",
-  "code": {
-    "bg": "#4c566a"
-  },
-  "mdCodeBlock": {
-    "bg": "#4c566a"
-  },
-  "overlay": {
-    "bg": "#2e3440"
-  },
-  "highlight": {
-    "bg": "#3f4758"
-  },
   "selection": {
     "bg": "#3f4758"
   },
-  "diffContext": "#4c566a",
   "diffAdd": {
     "bg": "#3f4a5a",
     "fg": "#A3BE8C"

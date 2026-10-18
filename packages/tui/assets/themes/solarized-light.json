@@ -3,12 +3,8 @@
   "id": "solarized-light",
   "name": "Solarized Light",
   "shiki": "solarized-light",
-  "text": "#657B83",
-  "subtle": "#FDF6E3",
-  "ui": {
-    "bg": "#FDF6E3",
-    "fg": "#657B83"
-  },
+  "fg": "#657B83",
+  "bg": "#FDF6E3",
   "primary": "#268bd2",
   "accent": "#d33682",
   "success": "#859900",
@@ -17,22 +13,9 @@
   "error": "#dc322f",
   "muted": "#002b36",
   "border": "#DDD6C1",
-  "code": {
-    "bg": "#FDF6E3"
-  },
-  "mdCodeBlock": {
-    "bg": "#FDF6E3"
-  },
-  "overlay": {
-    "bg": "#EEE8D5"
-  },
-  "highlight": {
-    "bg": "#EEE8D5"
-  },
   "selection": {
     "bg": "#EEE8D5"
   },
-  "diffContext": "#FDF6E3",
   "diffAdd": {
     "fg": "#859900"
   },
@@ -110,8 +93,5 @@
   },
   "mdListBullet": {
     "fg": "#B58900"
-  },
-  "mdCode": {
-    "fg": "#2AA198"
   }
 }

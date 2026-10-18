@@ -3,12 +3,8 @@
   "id": "dracula",
   "name": "Dracula Theme",
   "shiki": "dracula",
-  "text": "#F8F8F2",
-  "subtle": "#282A36",
-  "ui": {
-    "bg": "#282A36",
-    "fg": "#F8F8F2"
-  },
+  "fg": "#F8F8F2",
+  "bg": "#282A36",
   "primary": "#BD93F9",
   "accent": "#FF79C6",
   "success": "#50FA7B",
@@ -17,22 +13,9 @@
   "error": "#FF5555",
   "muted": "#6272A4",
   "border": "#BD93F9",
-  "code": {
-    "bg": "#282A36"
-  },
-  "mdCodeBlock": {
-    "bg": "#282A36"
-  },
-  "overlay": {
-    "bg": "#21222C"
-  },
-  "highlight": {
-    "bg": "#44475A"
-  },
   "selection": {
     "bg": "#44475A"
   },
-  "diffContext": "#282A36",
   "diffAdd": {
     "bg": "#2d443f",
     "fg": "#50FA7B"
@@ -110,9 +93,6 @@
   "mdQuote": {
     "italic": true,
     "fg": "#F1FA8C"
-  },
-  "mdCode": {
-    "fg": "#50FA7B"
   },
   "mdHr": {
     "fg": "#6272A4"

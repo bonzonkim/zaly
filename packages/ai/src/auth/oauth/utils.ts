@@ -14,6 +14,8 @@
 import type { JsonObject } from "@zaly/shared/json"
 import type { OAuthResponse } from "./types.ts"
 
+import { zalyUserAgent } from "../../utils/headers.ts"
+
 function base64url(bytes: Uint8Array): string {
   let bin = ""
   for (const b of bytes) bin += String.fromCharCode(b)
@@ -36,8 +38,6 @@ export async function generatePkce(): Promise<Pkce> {
 
   return { challenge, verifier }
 }
-
-export const zalyUserAgent = `zaly (${process.platform} ${process.release.name}; ${process.arch})`
 
 export type SafeFetchRequest = Omit<RequestInit, "headers"> & {
   throw?: boolean

@@ -1,4 +1,4 @@
-import type { AnyStyle } from "../style/types.ts"
+import type { AnyStyle, ThemeKey } from "../style/types.ts"
 import type { MarkdownCtx } from "./renderer.ts"
 import type { MdCallbacks } from "./types.ts"
 
@@ -69,7 +69,7 @@ export function createCallbacks(ctx: MarkdownCtx): MdCallbacks {
         .split("\n")
         .map((line) => line + " ".repeat(Math.max(0, width - stringWidth(line))))
         .join("\n")
-      return `${s.add(`mdHeading${level}`)(padded)}\n\n`
+      return `${s.add(`mdHeading${level}` as ThemeKey)(padded)}\n\n`
     },
 
     hr: () => `${s.mdHr(icons.hr.repeat(ctx.width))}\n\n`,

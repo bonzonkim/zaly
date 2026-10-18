@@ -36,6 +36,8 @@ export type Theme = {
 
   // ── base colors ──────────────────────────────────────────────────────
 
+  fg: Color
+  bg: Color
   /** Brand / primary accent. */
   primary: Color
   /** Secondary accent — distinct hue from `primary`. */
@@ -43,11 +45,6 @@ export type Theme = {
 
   // ── text ─────────────────────────────────────────────────────────────
 
-  /** Default text color used by themed blocks (markdown content, code,
-   *  quotes) that compose `fg: "text"` into their style. Defaults to
-   *  `"inherit"` (terminal fg). Set explicitly when a theme wants
-   *  themed text inside its tinted regions. */
-  text: Color
   /** Secondary text — first tier of the quietness ladder
    *  (`muted` → `quiet` → `comment`). Slightly faded but readable;
    *  good for timestamps, captions, less-prominent labels. */
@@ -65,11 +62,6 @@ export type Theme = {
 
   // ── surface & structure ──────────────────────────────────────────────
 
-  /** Structural neutral — applied as fg for borders, dividers, and the
-   *  gutter; as bg for subtly-tinted surfaces. Never used for
-   *  de-emphasized text; that's the `muted` / `quiet` / `comment`
-   *  tier. */
-  subtle: ThemeValue
   /** Default UI surface. Bottom of the stack. */
   ui: ThemeValue
   /** Popup / modal surface. One tier above `ui`. */

@@ -157,6 +157,43 @@ export function reapplyStyle(s: string, escape: string): string {
   return result + s.slice(lastPos)
 }
 
+/** Resolve terminal-default color resets without changing explicit child colors. */
+export function applyDefaultColors(text: string, fg: string, bg: string): string {
+  if ((!fg && !bg) || !text.includes("\x1b[")) return text
+  const fgParams = fg.slice(2, -1)
+  const bgParams = bg.slice(2, -1)
+  return text.replaceAll(/\x1b\[([\d;:]*)m/g, (match, raw: string) => {
+    const params = raw.split(";")
+    const next: string[] = []
+    let changed = false
+    for (let i = 0; i < params.length; i++) {
+      const param = params[i]
+      const code = Number(param)
+      if (code === 0) {
+        next.push(param, ...[fgParams, bgParams].filter(Boolean))
+        changed = true
+      } else if (code === 39 && fgParams) {
+        next.push(fgParams)
+        changed = true
+      } else if (code === 49 && bgParams) {
+        next.push(bgParams)
+        changed = true
+      } else {
+        next.push(param)
+        // RGB components and palette indexes can themselves be 0, 39, or 49.
+        if (code === 38 || code === 48 || code === 58) {
+          let count = 0
+          if (params[i + 1] === "2") count = 4
+          else if (params[i + 1] === "5") count = 2
+          next.push(...params.slice(i + 1, i + 1 + count))
+          i += count
+        }
+      }
+    }
+    return changed ? `\x1b[${next.join(";")}m` : match
+  })
+}
+
 export function stripAnsiBg(s: string): string {
   return s.replaceAll(/\x1b\[([0-9;]*)m/g, (match, raw: string) => {
     const next = stripBgParams(raw)

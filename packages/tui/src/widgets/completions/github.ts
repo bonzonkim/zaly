@@ -120,7 +120,7 @@ const defaultRender: OptionRender<GithubItem> = (item, ctx) => {
   return lead + " ".repeat(padded + gap) + style.add("optionDesc")(author)
 }
 
-function stateStyleSlot(state: string): string {
+function stateStyleSlot(state: string) {
   if (state === "open") return "success"
   if (state === "merged") return "accent"
   // "closed" and anything unknown → dim.

@@ -1,6 +1,7 @@
 import type { Content } from "../../src/types.ts"
 
 import { expect, test } from "vitest"
+import { builtinOverrides } from "../../src/models/overrides.ts"
 import { createOpenAIResponses } from "../../src/providers/openai-responses.ts"
 import { recordFetch, sseResponse, streamReq } from "../helpers/sse.ts"
 
@@ -32,7 +33,10 @@ async function cachedRequest(opts: { caching?: boolean; codex?: boolean } = {}) 
     model: "test",
   })
   ;(req.ctx as { cacheKey?: string }).cacheKey = "session-123"
-  if (opts.codex) req.model.provider.id = "openai-codex"
+  if (opts.codex) {
+    req.model.provider.id = "openai-codex"
+    req.model.provider.quirks = builtinOverrides["openai-codex"]?.quirks
+  }
   for await (const _ of provider.stream(req)) {
     // Drain the stream to capture the serialized request.
   }
@@ -45,16 +49,16 @@ test("Responses sends a stable prompt cache key", async () => {
   expect(request.headers["session-id"]).toBeUndefined()
 })
 
-test("Codex sends its cache key as the Responses session header", async () => {
+test("Codex supports cache-key-only callers for the session header", async () => {
   const request = await cachedRequest({ codex: true })
   expect(request.body).toMatchObject({ prompt_cache_key: "session-123" })
   expect(request.headers["session-id"]).toBe("session-123")
 })
 
-test("Responses omits cache affinity when caching is disabled", async () => {
+test("Codex retains session routing when cache affinity is disabled", async () => {
   const request = await cachedRequest({ caching: false, codex: true })
   expect(request.body).not.toHaveProperty("prompt_cache_key")
-  expect(request.headers["session-id"]).toBeUndefined()
+  expect(request.headers["session-id"]).toBe("session-123")
 })
 
 test("Responses tool results retain image and PDF attachments", async () => {

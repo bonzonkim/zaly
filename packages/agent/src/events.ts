@@ -52,6 +52,12 @@ export type AgentEvents = {
     usage: TokenCount
     status: AgentStatus
   }
-  context: { cacheKey?: string; prompt: string[]; tools: Tool[]; messages: Message[] }
+  context: {
+    cacheKey?: string
+    sessionId?: string
+    prompt: string[]
+    tools: Tool[]
+    messages: Message[]
+  }
   pending: { messages: Message[] }
 }

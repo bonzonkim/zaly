@@ -14,8 +14,10 @@ export const defaults: Omit<Theme, "id"> = {
   primary: "blue",
   accent: "brightMagenta",
 
+  bg: "inherit",
+  fg: "inherit",
+
   // text
-  text: "inherit",
   muted: { dim: true },
   quiet: { dim: true, fg: "muted", italic: true },
   comment: { fg: "muted", italic: true },
@@ -23,21 +25,20 @@ export const defaults: Omit<Theme, "id"> = {
   delim: "muted",
 
   // surface & structure
-  subtle: "brightBlack",
-  ui: { bg: "subtle" },
-  overlay: { bg: "subtle" },
-  highlight: { bg: "subtle" },
+  ui: { bg: "bg+5" },
+  overlay: { bg: "ui" },
+  highlight: { bg: "bg+5" },
 
   // ui primitives
-  divider: "subtle",
+  divider: "bg-5",
   selection: { bg: "brightBlue", fg: "black" },
-  gutter: "subtle",
+  gutter: "bg-5",
   prompt: "inherit",
   border: "black",
   borderTitle: "title",
 
   // code
-  code: { bg: "subtle" },
+  code: { bg: "bg+5" },
   codeTitle: "title",
 
   // log levels
@@ -59,8 +60,8 @@ export const defaults: Omit<Theme, "id"> = {
 
   // markdown
   mdBold: { bold: true },
-  mdCode: { bg: "primary+10", fg: "black" },
-  mdCodeBlock: { bg: "highlight", fg: "primary" },
+  mdCode: { bg: "highlight", fg: "primary" },
+  mdCodeBlock: "code",
   mdCodeBlockTitle: "title",
   mdHeading1: "mdHeading",
   mdHeading2: { bold: true, fg: "accent" },
@@ -87,7 +88,7 @@ export const defaults: Omit<Theme, "id"> = {
 
   // diff
   diffAdd: { bg: "success-50", fg: "success" },
-  diffContext: "muted",
+  diffContext: "highlight",
   diffDel: { bg: "error-50", fg: "error" },
   diffLine: "gutter",
   diffTitle: "title",
@@ -98,7 +99,6 @@ export const ansi: Theme = {
   id: "ansi",
   name: "ANSI",
   ...defaults,
-  subtle: "inherit",
   divider: "brightBlue",
   border: "brightBlue",
   highlight: { bg: "brightBlack" },

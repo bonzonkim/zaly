@@ -8,7 +8,7 @@ import { canonical } from "@zaly/tui";
 // contain actual typia imports
 // oxlint-disable import/no-named-as-default-member
 const validator = (() => {
-    const _ae0 = "(undefined | { mode?: \"fullscreen\" | \"scrollback\" | undefined; copyOnSelect?: boolean | undefined; collapsedTools?: AnyTool[] | undefined; images?: boolean | undefined; listHeight?: number | undefined; reasoning?: boolean | undefined; theme?: string | undefined; sessionTree?: (\"assistant\" | ... 2 more ... | \"tools\")[] | undefine...)";
+    const _ae0 = "(undefined | { mode?: \"fullscreen\" | \"scrollback\" | undefined; copyOnSelect?: boolean | undefined; collapsedTools?: AnyTool[] | undefined; images?: boolean | undefined; listHeight?: number | undefined; ... 4 more ...; treeHeight?: number | undefined; })";
     const _ae1 = "(undefined | { enabled?: boolean | undefined; keepTokens?: number | undefined; reasoning?: ReasoningEffort | undefined; summaryTokens?: number | undefined; threshold?: number | undefined; })";
     const _ae2 = "(undefined | { enabled?: boolean | undefined; minTokens?: number | undefined; keepTurns?: number | undefined; delta?: number | undefined; target?: number | undefined; })";
     const _ae3 = "(undefined | { preset?: PermissionPresetName | undefined; allow?: string[] | undefined; deny?: string[] | undefined; ask?: string[] | undefined; })";
@@ -220,13 +220,18 @@ const validator = (() => {
         path: _path + ".sessionTree",
         expected: "(Array<\"assistant\" | \"reasoning\" | \"system\" | \"tools\"> | undefined)",
         value: input.sessionTree
+    }, _errorFactory)) && (undefined === input.transparent || "boolean" === typeof input.transparent || _assertGuard_1._assertGuard(_exceptionable, {
+        method: "typia.createAssertEquals",
+        path: _path + ".transparent",
+        expected: "(boolean | undefined)",
+        value: input.transparent
     }, _errorFactory)) && (undefined === input.treeHeight || "number" === typeof input.treeHeight || _assertGuard_1._assertGuard(_exceptionable, {
         method: "typia.createAssertEquals",
         path: _path + ".treeHeight",
         expected: "(number | undefined)",
         value: input.treeHeight
     }, _errorFactory)) && (0 === Object.keys(input).length || (false === _exceptionable || Object.keys(input).every((key: any) => {
-        if (["mode", "copyOnSelect", "collapsedTools", "images", "listHeight", "reasoning", "theme", "sessionTree", "treeHeight"].some((prop: any) => key === prop))
+        if (["mode", "copyOnSelect", "collapsedTools", "images", "listHeight", "reasoning", "theme", "sessionTree", "transparent", "treeHeight"].some((prop: any) => key === prop))
             return true;
         const value = input[key];
         if (undefined === value)
@@ -594,8 +599,8 @@ const validator = (() => {
             return true;
         return false;
     }));
-    const _io1 = (input: any, _exceptionable: boolean = true): boolean => (undefined === input.mode || "fullscreen" === input.mode || "scrollback" === input.mode) && (undefined === input.copyOnSelect || "boolean" === typeof input.copyOnSelect) && (undefined === input.collapsedTools || Array.isArray(input.collapsedTools) && input.collapsedTools.every((elem: any, _index3: number) => "string" === typeof elem)) && (undefined === input.images || "boolean" === typeof input.images) && (undefined === input.listHeight || "number" === typeof input.listHeight) && (undefined === input.reasoning || "boolean" === typeof input.reasoning) && (undefined === input.theme || "string" === typeof input.theme) && (undefined === input.sessionTree || Array.isArray(input.sessionTree) && input.sessionTree.every((elem: any, _index4: number) => "assistant" === elem || "reasoning" === elem || "system" === elem || "tools" === elem)) && (undefined === input.treeHeight || "number" === typeof input.treeHeight) && (0 === Object.keys(input).length || Object.keys(input).every((key: any) => {
-        if (["mode", "copyOnSelect", "collapsedTools", "images", "listHeight", "reasoning", "theme", "sessionTree", "treeHeight"].some((prop: any) => key === prop))
+    const _io1 = (input: any, _exceptionable: boolean = true): boolean => (undefined === input.mode || "fullscreen" === input.mode || "scrollback" === input.mode) && (undefined === input.copyOnSelect || "boolean" === typeof input.copyOnSelect) && (undefined === input.collapsedTools || Array.isArray(input.collapsedTools) && input.collapsedTools.every((elem: any, _index3: number) => "string" === typeof elem)) && (undefined === input.images || "boolean" === typeof input.images) && (undefined === input.listHeight || "number" === typeof input.listHeight) && (undefined === input.reasoning || "boolean" === typeof input.reasoning) && (undefined === input.theme || "string" === typeof input.theme) && (undefined === input.sessionTree || Array.isArray(input.sessionTree) && input.sessionTree.every((elem: any, _index4: number) => "assistant" === elem || "reasoning" === elem || "system" === elem || "tools" === elem)) && (undefined === input.transparent || "boolean" === typeof input.transparent) && (undefined === input.treeHeight || "number" === typeof input.treeHeight) && (0 === Object.keys(input).length || Object.keys(input).every((key: any) => {
+        if (["mode", "copyOnSelect", "collapsedTools", "images", "listHeight", "reasoning", "theme", "sessionTree", "transparent", "treeHeight"].some((prop: any) => key === prop))
             return true;
         const value = input[key];
         if (undefined === value)

@@ -1,5 +1,12 @@
 import type { Theme } from "../themes/types.ts"
-import type { AnsiColorName, BrightAnsiColorName, Color, Style } from "./types.ts"
+import type {
+  AnsiColorName,
+  AnyStyle,
+  BrightAnsiColorName,
+  Color,
+  Style,
+  ThemeKey,
+} from "./types.ts"
 
 import { defaultTheme } from "../themes/registry.ts"
 import { reapplyStyle, RESET } from "./ansi.ts"
@@ -7,28 +14,31 @@ import { openStyle, resolveStyle } from "./style.ts"
 
 type AttrName = "bold" | "dim" | "italic" | "underline" | "inverse" | "strikethrough"
 
-type AnyThemeKey = Exclude<keyof Theme, "shiki" | "$schema"> | (string & {})
-
 // Theme color slots that can chain as fg/bg. `fg`/`bg` become setter methods
 // below, so exclude them here to avoid naming collisions. `dim` is an attr on
 // the chain; users wanting theme-slot-dim for fg use `.fg("dim")`.
-type ChainSlot = Exclude<keyof Theme, "fg" | "bg" | AttrName>
+type ChainSlot<Ansi extends boolean = true> =
+  | Exclude<ThemeKey, "fg" | "bg" | AttrName>
+  | (Ansi extends true ? AnsiColorName : never)
+  | (Ansi extends true ? BrightAnsiColorName : never)
 
-type FgChainKey = AnsiColorName | BrightAnsiColorName | ChainSlot
-type BgChainKey = `bg${Capitalize<FgChainKey>}`
-type FgExtractKey = `fg${Capitalize<FgChainKey>}`
-
-export type StyleBuilder = {
+export type StyleBuilder<Ansi extends boolean = false> = {
   theme: Theme
   (text: string): string
-  fg: (color: Color) => StyleBuilder
-  bg: (color: Color) => StyleBuilder
-  add: (slot?: AnyThemeKey | Style) => StyleBuilder
-  lighten: (n: number) => StyleBuilder
-  darken: (n: number) => StyleBuilder
+  fg: (color: Color<Ansi>) => StyleBuilder<Ansi>
+  bg: (color: Color<Ansi>) => StyleBuilder<Ansi>
+  add: (slot?: ThemeKey | AnyStyle) => StyleBuilder<Ansi>
+  lighten: (n: number) => StyleBuilder<Ansi>
+  darken: (n: number) => StyleBuilder<Ansi>
   // oxlint-disable-next-line typescript/consistent-indexed-object-style -- mapped over a key union, not an open string index
 } & {
-  readonly [K in AttrName | FgChainKey | BgChainKey | FgExtractKey]: StyleBuilder
+  readonly [
+    K in
+      | AttrName
+      | ChainSlot<Ansi>
+      | `bg${Capitalize<ChainSlot<Ansi>>}`
+      | `fg${Capitalize<ChainSlot<Ansi>>}`
+  ]: StyleBuilder<Ansi>
 }
 
 /**
@@ -53,12 +63,14 @@ export type StyleBuilder = {
  *
  * Calling an empty builder is a no-op: `styleBuilder()("x")` returns `"x"` unchanged.
  */
-export function styleBuilder(theme: Theme | false = defaultTheme): StyleBuilder {
+export function styleBuilder<Ansi extends boolean = false>(
+  theme: Theme | false = defaultTheme
+): StyleBuilder<Ansi> {
   return build({
     current: {},
     last: undefined,
     theme: theme === false ? { ...defaultTheme, enabled: false } : theme,
-  })
+  }) as StyleBuilder<Ansi>
 }
 
 const ATTRS = new Set<string>(["bold", "dim", "italic", "underline", "inverse", "strikethrough"])

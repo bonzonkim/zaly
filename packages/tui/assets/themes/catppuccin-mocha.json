@@ -3,12 +3,8 @@
   "id": "catppuccin-mocha",
   "name": "Catppuccin Mocha",
   "shiki": "catppuccin-mocha",
-  "text": "#cdd6f4",
-  "subtle": "#181825",
-  "ui": {
-    "bg": "#1e1e2e",
-    "fg": "#cdd6f4"
-  },
+  "fg": "#cdd6f4",
+  "bg": "#1e1e2e",
   "primary": "#89b4fa",
   "accent": "#89dceb",
   "success": "#a6e3a1",
@@ -17,22 +13,9 @@
   "error": "#f38ba8",
   "muted": "#585b70",
   "border": "#585b70",
-  "code": {
-    "bg": "#181825"
-  },
-  "mdCodeBlock": {
-    "bg": "#181825"
-  },
-  "overlay": {
-    "bg": "#181825"
-  },
-  "highlight": {
-    "bg": "#3b3d4f"
-  },
   "selection": {
     "bg": "#3b3d4f"
   },
-  "diffContext": "#181825",
   "diffAdd": {
     "bg": "#394545",
     "fg": "#a6e3a1"
@@ -115,9 +98,6 @@
   },
   "mdListBullet": {
     "fg": "#94e2d5"
-  },
-  "mdCode": {
-    "fg": "#a6e3a1"
   },
   "mdHr": {
     "fg": "#94e2d5"

@@ -32,6 +32,7 @@ import {
 } from "../content/compose.ts"
 import { stringifyContent } from "../content/format.ts"
 import { ContentTransform } from "../content/transform.ts"
+import { requestHeaders } from "../utils/headers.ts"
 
 // ── Content transform ───────────────────────────────────────────────────
 //
@@ -88,16 +89,12 @@ export function createOpenAIResponses(config: ProviderOptions = {}): Provider<"o
         apiKey?.key ? { Authorization: `Bearer ${apiKey.key}` } : {}
       const response = await doFetch(`${baseUrl}/responses`, {
         body: safeStringify(body),
-        headers: {
-          Accept: "text/event-stream",
-          "Content-Type": "application/json",
-          ...auth(),
-          ...apiKey?.headers,
-          ...config.headers,
-          ...(req.model.provider.id === "openai-codex" && body.prompt_cache_key
-            ? { "session-id": body.prompt_cache_key }
-            : {}),
-        },
+        headers: requestHeaders(
+          req,
+          { Accept: "text/event-stream", ...auth() },
+          apiKey?.headers,
+          config.headers
+        ),
         method: "POST",
         signal: req.opts.signal,
       })

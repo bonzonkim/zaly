@@ -88,7 +88,7 @@ const backends: Record<NonNullable<FindOptions["backend"]>, Finder> = {
       if (opts.signal?.aborted) return
       const rel = relative(cwd, path)
       // oxlint-disable-next-line no-await-in-loop
-      for await (const p of glob(opts.pattern, { ...globOpts, cwd: path })) {
+      for await (const p of glob(normalizeGlobs(opts.pattern), { ...globOpts, cwd: path })) {
         yield p.map((f) => (rel ? `${rel}/${f}` : f))
         count += p.length
         if (opts.limit && count >= opts.limit) return
@@ -166,7 +166,7 @@ async function* spawnFind(cmd: string, args: string[], opts: FindOptions): Async
       throw new FindError({ cause: error, code: "FIND_FAILED", message: String(error) })
     })
 
-    if (!stoppedEarly && result.code !== 0) {
+    if (!stoppedEarly && result.code !== 0 && !(cmd === "rg" && result.code === 1)) {
       throw new FindError({
         code: "FIND_FAILED",
         data: { code: result.code, stderr: result.stderr },
@@ -191,7 +191,15 @@ function fdArgs(opts: FindOptions): string[] {
   if (!opts.ignore) ret.push("--no-ignore")
   if (opts.follow) ret.push("--follow")
   for (const e of [...defaultExcludes(paths), ...(opts.exclude ?? [])]) ret.push("--exclude", e)
-  ret.push("--glob", fdGlob(globs), ...paths)
+  if (globs.length > 0) {
+    const roots = paths.length > 0 ? paths : ["."]
+    const fullGlobs = roots.flatMap((root) => {
+      const prefix = escapeGlob(normPath(opts.cwd, root)).replace(/\/$/, "")
+      return globs.map((glob) => `${prefix}/${glob}`)
+    })
+    ret.push("--full-path", "--glob", fdGlob(fullGlobs))
+  } else ret.push("--glob", "*")
+  ret.push("--", ...paths)
   return ret
 }
 
@@ -203,19 +211,28 @@ function rgFilesArgs(opts: FindOptions): string[] {
   if (opts.follow) ret.push("--follow")
   const paths = opts.paths ?? []
   for (const e of [...defaultExcludes(paths), ...(opts.exclude ?? [])]) ret.push("--glob", `!${e}`)
-  for (const glob of globs) ret.push("--glob", glob)
-  ret.push(...paths)
+  for (const root of paths.length > 0 ? paths : ["."]) {
+    const prefix = escapeGlob(relative(normPath(opts.cwd), normPath(opts.cwd, root)))
+    for (const glob of globs) ret.push("--glob", prefix ? `${prefix}/${glob}` : glob)
+  }
+  ret.push("--", ...paths)
   return ret
 }
 
 function normalizeGlobs(glob: string | string[] | undefined): string[] {
-  const values = Array.isArray(glob) ? glob : [glob]
-  return values
+  const values = (Array.isArray(glob) ? glob : [glob])
     .map((value) => value?.trim())
-    .filter(
-      (value): value is string => !!value && value !== "." && value !== "*" && value !== "**/*"
-    )
-    .map((value) => (hasGlob(value) ? value : `*${value}*`))
+    .filter((value): value is string => !!value)
+  if (values.some((value) => value === "." || value === "*" || value === "**/*")) return []
+  return values.map((value) => {
+    const pattern = hasGlob(value) ? value : `*${value}*`
+    return pattern.includes("/") ? pattern : `**/${pattern}`
+  })
+}
+
+// Search roots are literal paths, even when their names contain glob characters.
+function escapeGlob(path: string): string {
+  return path.replaceAll(/[\\*?[\]{},]/g, String.raw`\$&`)
 }
 
 function fdGlob(globs: string[]): string {

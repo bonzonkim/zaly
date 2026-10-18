@@ -3,12 +3,8 @@
   "id": "monokai",
   "name": "Monokai",
   "shiki": "monokai",
-  "text": "#F8F8F2",
-  "subtle": "#272822",
-  "ui": {
-    "bg": "#272822",
-    "fg": "#F8F8F2"
-  },
+  "fg": "#F8F8F2",
+  "bg": "#272822",
   "primary": "#6A7EC8",
   "accent": "#8C6BC8",
   "success": "#86B42B",
@@ -17,22 +13,9 @@
   "error": "#C4265E",
   "muted": "#666666",
   "border": "#414339",
-  "code": {
-    "bg": "#272822"
-  },
-  "mdCodeBlock": {
-    "bg": "#272822"
-  },
-  "overlay": {
-    "bg": "#1e1f1c"
-  },
-  "highlight": {
-    "bg": "#575a5a"
-  },
   "selection": {
     "bg": "#575a5a"
   },
-  "diffContext": "#272822",
   "diffAdd": {
     "bg": "#39471c",
     "fg": "#A6E22E"
@@ -110,8 +93,5 @@
   },
   "mdListBullet": {
     "fg": "#E6DB74"
-  },
-  "mdCode": {
-    "fg": "#FD971F"
   }
 }

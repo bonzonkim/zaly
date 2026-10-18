@@ -3,12 +3,8 @@
   "id": "material-theme-palenight",
   "name": "Material Theme Palenight",
   "shiki": "material-theme-palenight",
-  "text": "#babed8",
-  "subtle": "#292D3E",
-  "ui": {
-    "bg": "#292D3E",
-    "fg": "#babed8"
-  },
+  "fg": "#babed8",
+  "bg": "#292D3E",
   "primary": "#80CBC4",
   "accent": "#babed8",
   "success": "#C3E88D",
@@ -17,22 +13,9 @@
   "error": "#804b57",
   "muted": "#676E95",
   "border": "#292d3e",
-  "code": {
-    "bg": "#292D3E"
-  },
-  "mdCodeBlock": {
-    "bg": "#292D3E"
-  },
-  "overlay": {
-    "bg": "#292D3E"
-  },
-  "highlight": {
-    "bg": "#404663"
-  },
   "selection": {
     "bg": "#404663"
   },
-  "diffContext": "#292D3E",
   "diffAdd": {
     "bg": "#354356",
     "fg": "#C3E88D"
@@ -108,8 +91,5 @@
   "mdQuote": {
     "italic": true,
     "fg": "#89DDFF"
-  },
-  "mdCode": {
-    "fg": "#C3E88D"
   }
 }

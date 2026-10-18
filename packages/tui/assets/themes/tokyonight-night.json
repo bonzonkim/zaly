@@ -1,6 +1,6 @@
 {
   "accent": "#ff9e64",
-  "blend": "#1a1b26",
+  "bg": "#1a1b26",
   "border": "#27a1b9",
   "borderTitle": {
     "bold": true,
@@ -27,6 +27,7 @@
   },
   "divider": "#27a1b9",
   "error": "#db4b4b",
+  "fg": "#c0caf5",
   "gutter": "#3b4261",
   "highlight": {
     "bg": "#292e42",
@@ -115,7 +116,6 @@
     "bg": "#283457"
   },
   "shiki": "tokyo-night",
-  "subtle": "#16161e",
   "success": "#1abc9c",
   "syntaxBoolean": {
     "fg": "#2ac3de"
@@ -144,13 +144,12 @@
   "syntaxString": {
     "fg": "#9ece6a"
   },
-  "text": "#c0caf5",
   "title": {
     "bold": true,
     "fg": "#7aa2f7"
   },
   "ui": {
-    "bg": "#1a1b26",
+    "bg": "#16161e",
     "fg": "#c0caf5"
   },
   "warn": "#e0af68"

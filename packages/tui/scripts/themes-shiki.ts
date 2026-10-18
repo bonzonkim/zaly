@@ -153,9 +153,8 @@ function toTui(id: ShikiTheme, theme: ThemeRegistrationResolved): Partial<Theme>
     shiki: id,
 
     // ── base palette (VSCode color slots) ──────────────────────────────
-    text: fg,
-    subtle: t.color("textCodeBlock.background", "editor.background"),
-    ui: { bg, fg },
+    fg,
+    bg,
     primary: t.color("textLink.foreground", "terminal.ansiBlue"),
     accent: t.color("textLink.activeForeground", "terminal.ansiMagenta"),
     success: t.color("terminal.ansiGreen", "gitDecoration.addedResourceForeground"),
@@ -166,15 +165,14 @@ function toTui(id: ShikiTheme, theme: ThemeRegistrationResolved): Partial<Theme>
     border: t.color("panel.border", "editorGroup.border", "terminal.ansiBrightBlack"),
 
     // ── code / surfaces (VSCode color slots) ───────────────────────────
-    code: optBg(t.color("textCodeBlock.background", "editor.background")),
-    mdCodeBlock: optBg(t.color("textCodeBlock.background", "editor.background")),
-    overlay: optBg(t.color("editorWidget.background", "menu.background")),
-    highlight: optBg(t.color("editor.selectionBackground", "list.activeSelectionBackground")),
+    // code: optBg(t.color("textCodeBlock.background", "editor.background")),
+    // overlay: optBg(t.color("editorWidget.background", "menu.background")),
+    // highlight: optBg(t.color("editor.selectionBackground", "list.activeSelectionBackground")),
     //optionActive: optBg(t.color("list.activeSelectionBackground", "editor.selectionBackground")),
     selection: optBg(t.color("editor.selectionBackground")),
 
     // ── diff (mix VSCode bg + TextMate fg) ─────────────────────────────
-    diffContext: t.color("textCodeBlock.background", "editor.background"),
+    // diffContext: t.color("textCodeBlock.background", "editor.background"),
     diffAdd: combine(
       t.color("diffEditor.insertedTextBackground", "diffEditor.insertedLineBackground"),
       t.fg("markup.inserted.diff")
@@ -213,7 +211,7 @@ function toTui(id: ShikiTheme, theme: ThemeRegistrationResolved): Partial<Theme>
     mdLink: t.style("markup.link", "markup.underline.link", "string.other.link.title.markdown"),
     mdQuote: t.style("markup.quote"),
     mdListBullet: t.style("markup.list.bullet"),
-    mdCode: t.style("markup.inline.raw.string.markdown", "markup.raw"),
+    //mdCode: t.style("markup.inline.raw.string.markdown", "markup.raw"),
     mdHr: t.style("meta.separator.markdown"),
   }
 
@@ -247,6 +245,9 @@ async function build(id: ShikiTheme): Promise<void> {
   const mod = await loader()
   const theme = mod.default
   const tui = toTui(id, normalizeTheme(theme))
+  // for (const k of Object.keys(defaults)) {
+  //   if (!(k in tui)) console.error(`⚠  ${id}: missing slot "${k}" — will fall back to defaults`)
+  // }
   const path = resolve(outDir, `${id}.json`)
   // oxlint-disable-next-line no-null -- JSON.stringify's replacer arg
   writeFileSync(path, `${JSON.stringify(tui, null, 2)}\n`)

@@ -113,6 +113,7 @@ export class Compaction {
       {
         messages: [message],
         prompt: [SYSTEM_PROMPT],
+        sessionId: this.#agent.session.id,
       },
       {
         caching: false,

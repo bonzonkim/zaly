@@ -14,16 +14,16 @@ describe("text()", () => {
   })
 
   test("string + style", () => {
-    const t = text("hi", { fg: "red", width: 5 })
+    const t = text("hi", { fg: "primary", width: 5 })
     expect(t.state.content).toBe("hi")
-    expect(t.state.fg).toBe("red")
+    expect(t.state.fg).toBe("primary")
     expect(t.state.width).toBe(5)
   })
 
   test("style object form", () => {
-    const t = text({ content: "hi", fg: "red" })
+    const t = text({ content: "hi", fg: "primary" })
     expect(t.state.content).toBe("hi")
-    expect(t.state.fg).toBe("red")
+    expect(t.state.fg).toBe("primary")
   })
 })
 

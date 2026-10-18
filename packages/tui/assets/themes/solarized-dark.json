@@ -3,12 +3,8 @@
   "id": "solarized-dark",
   "name": "Solarized Dark",
   "shiki": "solarized-dark",
-  "text": "#839496",
-  "subtle": "#002B36",
-  "ui": {
-    "bg": "#002B36",
-    "fg": "#839496"
-  },
+  "fg": "#839496",
+  "bg": "#002B36",
   "primary": "#268bd2",
   "accent": "#d33682",
   "success": "#859900",
@@ -17,22 +13,9 @@
   "error": "#dc322f",
   "muted": "#002b36",
   "border": "#2b2b4a",
-  "code": {
-    "bg": "#002B36"
-  },
-  "mdCodeBlock": {
-    "bg": "#002B36"
-  },
-  "overlay": {
-    "bg": "#00212B"
-  },
-  "highlight": {
-    "bg": "#274642"
-  },
   "selection": {
     "bg": "#274642"
   },
-  "diffContext": "#002B36",
   "diffAdd": {
     "fg": "#859900"
   },
@@ -110,8 +93,5 @@
   },
   "mdListBullet": {
     "fg": "#B58900"
-  },
-  "mdCode": {
-    "fg": "#2AA198"
   }
 }

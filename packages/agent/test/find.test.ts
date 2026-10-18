@@ -5,7 +5,7 @@ import { find as findFiles } from "@zaly/shared/find"
 import { execFileSync } from "node:child_process"
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
-import { join } from "pathe"
+import { dirname, join } from "pathe"
 import { afterEach, beforeEach, expect, test } from "vitest"
 import { findTool } from "../src/tools/find.ts"
 
@@ -21,6 +21,15 @@ beforeEach(() => {
   writeFileSync(join(dir, "src", "main.ts"), "")
   writeFileSync(join(dir, "ignored.txt"), "")
   writeFileSync(join(dir, "node_modules", "dependency.js"), "")
+  for (const file of [
+    "packages/config/src/schemas/tpl/models.ts",
+    "packages/ai/test/catalog.test.ts",
+    "packages/dev/test/smoke.test.ts",
+    "packages/dev/test/pack.test.ts",
+  ]) {
+    mkdirSync(dirname(join(dir, file)), { recursive: true })
+    writeFileSync(join(dir, file), "")
+  }
 })
 afterEach(() => rmSync(dir, { force: true, recursive: true }))
 
@@ -71,6 +80,18 @@ test("supports absolute search paths and filename globs", async () => {
   const files = await find({ glob: "*.ts", paths: [join(dir, "src")] })
   expect(files).toHaveLength(1)
   expect(files[0]).toMatch(/(?:^|\/)main\.ts$/)
+})
+
+test("supports arrays mixing recursive path and filename globs", async () => {
+  const files = await find({
+    glob: ["**/schemas/tpl/**", "*catalog*.test.ts", "**/*smoke*.test.ts", "**/*pack*.test.ts"],
+  })
+  expect(files.toSorted()).toEqual([
+    "packages/ai/test/catalog.test.ts",
+    "packages/config/src/schemas/tpl/models.ts",
+    "packages/dev/test/pack.test.ts",
+    "packages/dev/test/smoke.test.ts",
+  ])
 })
 
 test("allows explicitly targeting an otherwise excluded directory", async () => {

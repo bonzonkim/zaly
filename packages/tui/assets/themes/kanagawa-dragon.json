@@ -3,12 +3,8 @@
   "id": "kanagawa-dragon",
   "name": "Kanagawa Dragon",
   "shiki": "kanagawa-dragon",
-  "text": "#C5C9C5",
-  "subtle": "#181616",
-  "ui": {
-    "bg": "#181616",
-    "fg": "#C5C9C5"
-  },
+  "fg": "#C5C9C5",
+  "bg": "#181616",
   "primary": "#6A9589",
   "accent": "#A292A3",
   "success": "#8A9A7B",
@@ -17,22 +13,9 @@
   "error": "#E82424",
   "muted": "#A6A69C",
   "border": "#0D0C0C",
-  "code": {
-    "bg": "#181616"
-  },
-  "mdCodeBlock": {
-    "bg": "#181616"
-  },
-  "overlay": {
-    "bg": "#181616"
-  },
-  "highlight": {
-    "bg": "#223249"
-  },
   "selection": {
     "bg": "#223249"
   },
-  "diffContext": "#181616",
   "diffAdd": {
     "bg": "#22251f",
     "fg": "#76946A"
@@ -108,9 +91,6 @@
   },
   "mdQuote": {
     "italic": true
-  },
-  "mdCode": {
-    "fg": "#8A9A7B"
   },
   "mdHr": {
     "bold": true,

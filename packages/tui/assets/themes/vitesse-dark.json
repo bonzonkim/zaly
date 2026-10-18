@@ -3,12 +3,8 @@
   "id": "vitesse-dark",
   "name": "Vitesse Dark",
   "shiki": "vitesse-dark",
-  "text": "#dbd7caee",
-  "subtle": "#121212",
-  "ui": {
-    "bg": "#121212",
-    "fg": "#dbd7caee"
-  },
+  "fg": "#dbd7caee",
+  "bg": "#121212",
   "primary": "#4d9375",
   "accent": "#4d9375",
   "success": "#4d9375",
@@ -17,22 +13,9 @@
   "error": "#cb7676",
   "muted": "#777777",
   "border": "#191919",
-  "code": {
-    "bg": "#121212"
-  },
-  "mdCodeBlock": {
-    "bg": "#121212"
-  },
-  "overlay": {
-    "bg": "#121212"
-  },
-  "highlight": {
-    "bg": "#272727"
-  },
   "selection": {
     "bg": "#272727"
   },
-  "diffContext": "#121212",
   "diffAdd": {
     "bg": "#253a31",
     "fg": "#85e89d"
@@ -116,9 +99,6 @@
   },
   "mdQuote": {
     "fg": "#5d99a9"
-  },
-  "mdCode": {
-    "fg": "#4d9375"
   },
   "mdHr": {
     "bold": true,

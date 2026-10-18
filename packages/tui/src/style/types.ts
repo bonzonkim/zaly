@@ -29,7 +29,7 @@ export type AnsiColor = AnsiColorName | BrightAnsiColorName | HexColor | "inheri
  *  (any case; runtime validates). Alpha is native to the hex form, so
  *  there is no separate `/<alpha>` suffix for hex. */
 export type HexColor = `#${string}`
-export type ThemeKey = keyof Theme
+export type ThemeKey = Exclude<keyof Theme, "shiki" | "$schema" | "id">
 
 /**
  * A color value. Accepted forms:
@@ -43,10 +43,10 @@ export type ThemeKey = keyof Theme
  *    (extracting the channel when needed), then `variant(base, step)`
  *    shifts it along the OKLCH tonal scale.
  */
-export type Color =
+export type Color<Ansi extends boolean = true> =
   | HexColor
-  | AnsiColorName
-  | BrightAnsiColorName
+  | (Ansi extends true ? AnsiColorName : never)
+  | (Ansi extends true ? BrightAnsiColorName : never)
   | ThemeKey
   | "inherit"
   | `${HexColor | ThemeKey}-${ColorLightness}`
@@ -67,10 +67,10 @@ export interface AnsiStyle {
  *  Pure styling — no layout or lifecycle fields. Widget state interfaces
  *  extend `StyleState` to pick up the `visible` base-state bits alongside
  *  these style fields. */
-export type Style = Omit<AnsiStyle, "fg" | "bg"> & {
-  fg?: Color
-  bg?: Color
-  style?: AnyStyle
+export type Style<Ansi extends boolean = true> = Omit<AnsiStyle, "fg" | "bg"> & {
+  fg?: Color<Ansi>
+  bg?: Color<Ansi>
+  style?: AnyStyle<Ansi>
 }
 
-export type AnyStyle = Style | Color
+export type AnyStyle<Ansi extends boolean = false> = Style<Ansi> | Color<Ansi>

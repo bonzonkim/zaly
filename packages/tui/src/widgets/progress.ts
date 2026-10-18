@@ -28,9 +28,9 @@ export interface ProgressState {
    */
   label?: string | ((ctx: RenderCtx, fraction: number) => string)
   /** Foreground theme slot for the filled portion. Defaults to `primary`. */
-  color?: Color
+  color?: Color<false>
   /** Foreground theme slot for the empty portion. Defaults to `muted`. */
-  trackColor?: Color
+  trackColor?: Color<false>
   /** Filled glyph. Defaults to `█`. */
   complete?: string
   /** Empty glyph. Defaults to `░`. */

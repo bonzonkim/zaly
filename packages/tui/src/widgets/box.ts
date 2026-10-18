@@ -2,7 +2,7 @@ import type { RenderCtx } from "../core/ctx.ts"
 import type { State } from "../core/state.ts"
 import type { BorderSpec, TitleAlign } from "../layout/border.ts"
 import type { RowItem } from "../layout/flex.ts"
-import type { Style } from "../style/types.ts"
+import type { AnyStyle, Style } from "../style/types.ts"
 import type { TextContent } from "./text.ts"
 
 import { stringWidth } from "@zaly/shared/ansi"
@@ -43,12 +43,12 @@ export interface BoxStyle extends Style {
    * via the active theme) or an inline `Style`. Defaults to the `"border"`
    * theme slot when a border is drawn.
    */
-  borderStyle?: string | Style
+  borderStyle?: AnyStyle
   /**
    * Style applied to the border title. Defaults to the `"borderTitle"` theme
    * slot when a title is set.
    */
-  borderTitleStyle?: string | Style
+  borderTitleStyle?: AnyStyle
 }
 
 export class Box<T extends object = {}> extends Node<BoxStyle & T> {

@@ -3,12 +3,8 @@
   "id": "poimandres",
   "name": "Poimandres",
   "shiki": "poimandres",
-  "text": "#a6accd",
-  "subtle": "#13151b",
-  "ui": {
-    "bg": "#1b1e28",
-    "fg": "#a6accd"
-  },
+  "fg": "#a6accd",
+  "bg": "#1b1e28",
   "primary": "#ADD7FF",
   "accent": "#ADD7FF",
   "success": "#5DE4c7",
@@ -17,22 +13,9 @@
   "error": "#d0679d",
   "muted": "#a6accd",
   "border": "#161820",
-  "code": {
-    "bg": "#13151b"
-  },
-  "mdCodeBlock": {
-    "bg": "#13151b"
-  },
-  "overlay": {
-    "bg": "#1b1e28"
-  },
-  "highlight": {
-    "bg": "#272c3c"
-  },
   "selection": {
     "bg": "#272c3c"
   },
-  "diffContext": "#13151b",
   "diffAdd": {
     "bg": "#1f242f",
     "fg": "#ADD7FF"
@@ -114,9 +97,6 @@
   },
   "mdQuote": {
     "italic": true
-  },
-  "mdCode": {
-    "fg": "#7390AA"
   },
   "mdHr": {
     "fg": "#767c9d"

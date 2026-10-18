@@ -32,6 +32,7 @@ import {
 } from "../content/compose.ts"
 import { stringifyContent } from "../content/format.ts"
 import { ContentTransform } from "../content/transform.ts"
+import { requestHeaders } from "../utils/headers.ts"
 
 // ── Content transform ───────────────────────────────────────────────────
 //
@@ -102,12 +103,7 @@ export function createOpenAI(config: ProviderOptions = {}): Provider<"openai"> {
         apiKey?.key ? { Authorization: `Bearer ${apiKey.key}` } : {}
       const response = await doFetch(`${baseUrl}/chat/completions`, {
         body: safeStringify(body),
-        headers: {
-          "Content-Type": "application/json",
-          ...auth(),
-          ...apiKey?.headers,
-          ...config.headers,
-        },
+        headers: requestHeaders(req, auth(), apiKey?.headers, config.headers),
         method: "POST",
         signal: req.opts.signal,
       })

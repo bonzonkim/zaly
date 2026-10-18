@@ -16,7 +16,7 @@ type Bubble = {
 }
 
 const bubbles = {
-  assistant: { icon: "●", style: "white" },
+  assistant: { icon: "●", style: "fg" },
   permission: { icon: "●", spinner: true, style: "warn" },
   reasoning: { icon: "∴", style: "quiet" },
   tool_error: { icon: "●", style: "error" },

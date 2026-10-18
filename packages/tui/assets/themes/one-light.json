@@ -3,30 +3,13 @@
   "id": "one-light",
   "name": "One Light",
   "shiki": "one-light",
-  "text": "#383A42",
-  "subtle": "#FAFAFA",
-  "ui": {
-    "bg": "#FAFAFA",
-    "fg": "#383A42"
-  },
+  "fg": "#383A42",
+  "bg": "#FAFAFA",
   "muted": "#d3d4d5",
   "border": "#DBDBDC",
-  "code": {
-    "bg": "#FAFAFA"
-  },
-  "mdCodeBlock": {
-    "bg": "#FAFAFA"
-  },
-  "overlay": {
-    "bg": "#EAEAEB"
-  },
-  "highlight": {
-    "bg": "#E5E5E6"
-  },
   "selection": {
     "bg": "#E5E5E6"
   },
-  "diffContext": "#FAFAFA",
   "diffAdd": {
     "bg": "#c8e2e7",
     "fg": "#50A14F"
@@ -100,9 +83,6 @@
   },
   "mdQuote": {
     "fg": "#986801"
-  },
-  "mdCode": {
-    "fg": "#50A14F"
   },
   "mdHr": {
     "fg": "#383A42"

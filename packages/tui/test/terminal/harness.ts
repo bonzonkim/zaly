@@ -12,6 +12,7 @@
  */
 
 import type { GhosttyCell, GhosttyTerminal } from "ghostty-web"
+import type { RendererOptions } from "../../src/renderer/renderer.ts"
 import type { TerminalReader, TerminalWriter } from "../../src/renderer/terminal.ts"
 
 import { Ghostty } from "ghostty-web"
@@ -59,6 +60,9 @@ async function loadGhostty(): Promise<Ghostty> {
 }
 
 export interface HarnessOpts {
+  defaultStyle?: RendererOptions["defaultStyle"]
+  theme?: RendererOptions["theme"]
+  transparent?: RendererOptions["transparent"]
   cols?: number
   rows?: number
   /** Scrollback capacity in lines. Default: 1000. */
@@ -145,6 +149,9 @@ export async function makeHarness(opts: HarnessOpts = {}): Promise<Harness> {
   }
 
   const renderer = new Renderer({
+    defaultStyle: opts.defaultStyle,
+    theme: opts.theme,
+    transparent: opts.transparent,
     fixedFooterHeight: opts.fixedFooterHeight,
     hookSignals: false,
     stdin,

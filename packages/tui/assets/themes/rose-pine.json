@@ -3,12 +3,8 @@
   "id": "rose-pine",
   "name": "Rosé Pine",
   "shiki": "rose-pine",
-  "text": "#e0def4",
-  "subtle": "#1f1d2e",
-  "ui": {
-    "bg": "#191724",
-    "fg": "#e0def4"
-  },
+  "fg": "#e0def4",
+  "bg": "#191724",
   "primary": "#c4a7e7",
   "accent": "#b399d4",
   "success": "#31748f",
@@ -17,22 +13,9 @@
   "error": "#eb6f92",
   "muted": "#908caa",
   "border": "#0000",
-  "code": {
-    "bg": "#1f1d2e"
-  },
-  "mdCodeBlock": {
-    "bg": "#1f1d2e"
-  },
-  "overlay": {
-    "bg": "#1f1d2e"
-  },
-  "highlight": {
-    "bg": "#2a2838"
-  },
   "selection": {
     "bg": "#2a2838"
   },
-  "diffContext": "#1f1d2e",
   "diffAdd": {
     "bg": "#2d323f",
     "fg": "#9ccfd8"
